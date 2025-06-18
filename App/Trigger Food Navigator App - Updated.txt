@@ -1,0 +1,515 @@
+// Sample recipes with component-based ingredient organization
+const safeRecipes = [
+  {
+    id: 1,
+    name: "Chicken & Rice Bowl",
+    image: "/api/placeholder/200/150",
+    description: "A simple and soothing bowl with lean protein and easy-to-digest carbs",
+    ingredientComponents: {
+      "Protein": ["Chicken breast"],
+      "Base": ["White rice"],
+      "Vegetables": ["Carrots", "Spinach"]
+    },
+    instructions: [
+      "Cook rice according to package instructions",
+      "Season chicken with salt and pepper, grill until cooked through",
+      "Steam carrots and spinach",
+      "Combine all ingredients in a bowl"
+    ],
+    prepTime: 15,
+    cookTime: 25,
+    calories: 420,
+    protein: 32,
+    carbs: 45,
+    fat: 10,
+    fiber: 4,
+    avoidIngredients: []
+  },
+  {
+    id: 2,
+    name: "Banana Oat-Free Breakfast Bowl",
+    image: "/api/placeholder/200/150",
+    description: "A nutritious breakfast without common IBS triggers",
+    ingredientComponents: {
+      "Base": ["Rice flakes"],
+      "Fruits": ["Bananas", "Apples"],
+      "Seasonings": ["Cinnamon"]
+    },
+    instructions: [
+      "Cook rice flakes in water until soft",
+      "Slice bananas and apples",
+      "Add to bowl and sprinkle with cinnamon",
+      "Add a splash of non-dairy milk if desired"
+    ],
+    prepTime: 5,
+    cookTime: 10,
+    calories: 320,
+    protein: 4,
+    carbs: 76,
+    fat: 1,
+    fiber: 7,
+    avoidIngredients: []
+  },
+  {
+    id: 3,
+    name: "Beef & Sweet Potato Hash",
+    image: "/api/placeholder/200/150",
+    description: "Savory and filling meal that's gentle on the digestive system",
+    ingredientComponents: {
+      "Protein": ["Lean ground beef"],
+      "Vegetables": ["Sweet potatoes", "Carrots"],
+      "Seasonings": ["Rosemary"]
+    },
+    instructions: [
+      "Dice sweet potatoes and carrots into small cubes",
+      "Brown beef in a pan, drain excess fat",
+      "Add vegetables and rosemary to the pan",
+      "Cook until vegetables are tender"
+    ],
+    prepTime: 10,
+    cookTime: 20,
+    calories: 390,
+    protein: 28,
+    carbs: 35,
+    fat: 15,
+    fiber: 6,
+    avoidIngredients: []
+  },
+  {
+    id: 4,
+    name: "Drunken Noodles",
+    image: "/api/placeholder/200/150",
+    description: "Thai-inspired noodle dish with bold flavors and IBS-friendly ingredients",
+    ingredientComponents: {
+      "Sauce": [
+        "Chinese sweet soy sauce (75 ml)",
+        "Chinese vegetarian oyster sauce (45 ml)",
+        "Thai soybean sauce (45 ml)",
+        "Vegan sugar (30 g)",
+        "Sriracha (10 ml)"
+      ],
+      "Noodles": [
+        "Canola or peanut oil (45 ml)",
+        "Serrano chiles (1-2, thinly sliced)",
+        "White onion (1/2 medium, sliced)",
+        "Extra-firm tofu (145 g, drained and diced)",
+        "Fresh rice noodles (675-910 g, separated)",
+        "Grape tomatoes (120 g, halved)"
+      ],
+      "Aromatics": [
+        "Minced garlic (10 g)",
+        "Thai basil leaves (240 g, loosely packed)"
+      ]
+    },
+    instructions: [
+      "Prepare the sauce by mixing all sauce ingredients in a bowl",
+      "Heat oil in a large wok or pan over high heat",
+      "Add garlic and chiles, stir-fry for 30 seconds",
+      "Add onion and cook until softened",
+      "Add tofu and cook until golden",
+      "Add noodles and sauce, toss to combine",
+      "Add tomatoes and half the basil, cook until heated through",
+      "Garnish with remaining basil and serve immediately"
+    ],
+    prepTime: 20,
+    cookTime: 15,
+    calories: 520,
+    protein: 18,
+    carbs: 85,
+    fat: 12,
+    fiber: 6,
+    avoidIngredients: []
+  },
+  {
+    id: 5,
+    name: "Mediterranean Chicken Bowl",
+    image: "/api/placeholder/200/150",
+    description: "Fresh Mediterranean flavors with IBS-friendly ingredients",
+    ingredientComponents: {
+      "Protein": ["Grilled chicken breast (150g)"],
+      "Base": ["Quinoa (100g, cooked)", "Baby spinach (50g)"],
+      "Vegetables": ["Cucumber (1 medium, diced)", "Cherry tomatoes (100g, halved)", "Red bell pepper (1/2, sliced)"],
+      "Dressing": ["Olive oil (15ml)", "Lemon juice (10ml)", "Fresh herbs (basil, oregano)"],
+      "Garnish": ["Kalamata olives (30g)", "Feta cheese (30g, crumbled)"]
+    },
+    instructions: [
+      "Cook quinoa according to package instructions and let cool",
+      "Season and grill chicken breast until cooked through",
+      "Prepare all vegetables by washing and chopping",
+      "Whisk together olive oil, lemon juice, and herbs for dressing",
+      "Arrange spinach and quinoa in bowl, top with chicken and vegetables",
+      "Drizzle with dressing and garnish with olives and feta"
+    ],
+    prepTime: 15,
+    cookTime: 20,
+    calories: 485,
+    protein: 35,
+    carbs: 42,
+    fat: 18,
+    fiber: 8,
+    avoidIngredients: []
+  },
+  {
+    id: 6,
+    name: "Asian-Style Lettuce Wraps",
+    image: "/api/placeholder/200/150",
+    description: "Light and flavorful lettuce wraps with ground turkey",
+    ingredientComponents: {
+      "Protein": ["Ground turkey (200g, lean)"],
+      "Vegetables": ["Butter lettuce leaves (8 large)", "Carrots (2 medium, julienned)", "Bell peppers (1, diced)", "Green onions (2, sliced)"],
+      "Sauce": ["Low-sodium soy sauce (30ml)", "Rice vinegar (15ml)", "Sesame oil (5ml)", "Fresh ginger (5g, minced)"],
+      "Garnish": ["Sesame seeds (10g)", "Fresh cilantro (15g, chopped)"]
+    },
+    instructions: [
+      "Heat a large skillet over medium-high heat",
+      "Cook ground turkey until browned and cooked through",
+      "Add carrots and bell peppers, cook until tender",
+      "Mix sauce ingredients in a small bowl",
+      "Add sauce to turkey mixture and stir to combine",
+      "Serve in lettuce cups, garnish with green onions, sesame seeds, and cilantro"
+    ],
+    prepTime: 20,
+    cookTime: 15,
+    calories: 320,
+    protein: 28,
+    carbs: 18,
+    fat: 14,
+    fiber: 5,
+    avoidIngredients: []
+  },
+  {
+    id: 7,
+    name: "Breakfast Power Bowl",
+    image: "/api/placeholder/200/150",
+    description: "Energizing breakfast bowl with safe ingredients",
+    ingredientComponents: {
+      "Base": ["Steel-cut oats (40g)", "Chia seeds (10g)"],
+      "Fruits": ["Strawberries (100g, sliced)", "Blueberries (75g)", "Banana (1 medium, sliced)"],
+      "Protein": ["Greek yogurt (100g, plain)", "Almond butter (15g)"],
+      "Toppings": ["Pumpkin seeds (15g)", "Coconut flakes (10g)", "Cinnamon (pinch)"]
+    },
+    instructions: [
+      "Cook steel-cut oats according to package instructions",
+      "Stir in chia seeds during last 5 minutes of cooking",
+      "Let oats cool slightly and transfer to bowl",
+      "Top with Greek yogurt and almond butter",
+      "Arrange fresh fruits on top",
+      "Sprinkle with pumpkin seeds, coconut flakes, and cinnamon"
+    ],
+    prepTime: 10,
+    cookTime: 25,
+    calories: 445,
+    protein: 18,
+    carbs: 65,
+    fat: 16,
+    fiber: 12,
+    avoidIngredients: []
+  }
+];
+
+// Component-based ingredient display function
+const renderIngredientComponents = (ingredientComponents, getFoodStatus, colors) => {
+  return (
+    <div className="space-y-4">
+      {Object.entries(ingredientComponents || {}).map(([componentName, ingredients]) => (
+        <div key={componentName} className="mb-4">
+          <h5 className="font-medium text-sm mb-2 text-gray-700 uppercase tracking-wide">
+            {componentName}
+          </h5>
+          <ul className="space-y-2 ml-2">
+            {ingredients.map((ingredient, idx) => {
+              // Extract base ingredient name for status checking (remove quantities/descriptions)
+              const baseIngredient = ingredient.split('(')[0].trim();
+              const status = getFoodStatus(baseIngredient);
+              return (
+                <li key={idx} className="flex items-center text-sm">
+                  <span 
+                    className="w-2 h-2 rounded-full mr-2 flex-shrink-0"
+                    style={{ 
+                      backgroundColor: 
+                        status === 'safe' ? colors.highlight : 
+                        status === 'moderate' ? colors.accent : 
+                        status === 'avoid' ? '#e74c3c' : 
+                        colors.secondary
+                    }}
+                  ></span>
+                  <span className="leading-relaxed">{ingredient}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// Updated Recipe Modal with Component-Based Ingredients
+const RecipeModal = ({ 
+  showRecipeModal, 
+  setShowRecipeModal, 
+  selectedRecipe, 
+  setSelectedRecipe, 
+  safeRecipes, 
+  colors, 
+  getFoodStatus, 
+  shoppingList, 
+  setShoppingList, 
+  meals, 
+  setMeals, 
+  selectedDay 
+}) => {
+  if (!showRecipeModal) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-screen overflow-y-auto">
+        <div className="p-4 border-b flex justify-between items-center">
+          <h2 className="text-lg font-semibold" style={{ color: colors.secondary }}>
+            IBS-Friendly Recipe Suggestions
+          </h2>
+          <button onClick={() => setShowRecipeModal(false)}>
+            <X size={20} />
+          </button>
+        </div>
+        
+        <div className="p-4">
+          {selectedRecipe ? (
+            <div>
+              <button
+                className="flex items-center text-sm mb-4"
+                style={{ color: colors.accent }}
+                onClick={() => setSelectedRecipe(null)}
+              >
+                <ChevronLeft size={16} className="mr-1" />
+                Back to recipes
+              </button>
+              
+              <div className="mb-4">
+                <img 
+                  src={selectedRecipe.image} 
+                  alt={selectedRecipe.name} 
+                  className="w-full h-48 object-cover rounded-lg mb-3"
+                />
+                <h3 className="text-xl font-semibold mb-1">{selectedRecipe.name}</h3>
+                <p className="text-sm text-gray-600 mb-2">{selectedRecipe.description}</p>
+                
+                <div className="flex flex-wrap gap-2 mb-4">
+                  <span className="text-xs px-2 py-1 rounded-full flex items-center" style={{ backgroundColor: colors.secondary + '15' }}>
+                    <Clock size={12} className="mr-1" />
+                    Prep: {selectedRecipe.prepTime} min
+                  </span>
+                  <span className="text-xs px-2 py-1 rounded-full flex items-center" style={{ backgroundColor: colors.secondary + '15' }}>
+                    <Clock size={12} className="mr-1" />
+                    Cook: {selectedRecipe.cookTime} min
+                  </span>
+                  <span className="text-xs px-2 py-1 rounded-full flex items-center" style={{ backgroundColor: colors.primary + '15', color: colors.primary }}>
+                    {selectedRecipe.calories} calories
+                  </span>
+                  <span className="text-xs px-2 py-1 rounded-full flex items-center" style={{ backgroundColor: colors.highlight + '20', color: colors.secondary }}>
+                    IBS-friendly
+                  </span>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-medium mb-2 pb-1 border-b">Ingredients by Component</h4>
+                  {renderIngredientComponents(selectedRecipe.ingredientComponents, getFoodStatus, colors)}
+                  
+                  <div className="mt-4">
+                    <h4 className="font-medium mb-2 pb-1 border-b">Nutrition Information</h4>
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>Calories:</span>
+                        <span>{selectedRecipe.calories}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Protein:</span>
+                        <span>{selectedRecipe.protein}g</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Carbs:</span>
+                        <span>{selectedRecipe.carbs}g</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Fat:</span>
+                        <span>{selectedRecipe.fat}g</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Fiber:</span>
+                        <span>{selectedRecipe.fiber}g</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="font-medium mb-2 pb-1 border-b">Instructions</h4>
+                  <ol className="space-y-2 list-decimal list-inside text-sm">
+                    {selectedRecipe.instructions.map((step, idx) => (
+                      <li key={idx}>{step}</li>
+                    ))}
+                  </ol>
+                  
+                  <div className="mt-4 p-3 rounded-lg" style={{ backgroundColor: colors.highlight + '15' }}>
+                    <h4 className="font-medium text-sm mb-1">Component-Based Cooking</h4>
+                    <p className="text-xs">
+                      This recipe is organized by components to help you understand how the meal is structured. 
+                      Each component serves a specific purpose in creating a balanced, IBS-friendly dish.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-6 flex justify-between">
+                <button
+                  className="px-4 py-2 rounded text-sm flex items-center"
+                  style={{ backgroundColor: colors.secondary + '15' }}
+                  onClick={() => {
+                    // Add ingredients to shopping list
+                    const allIngredients = Object.values(selectedRecipe.ingredientComponents || {}).flat();
+                    const newItems = allIngredients.filter(
+                      ingredient => {
+                        const baseIngredient = ingredient.split('(')[0].trim();
+                        return !shoppingList.some(item => item.name === baseIngredient);
+                      }
+                    ).map(ingredient => {
+                      const baseIngredient = ingredient.split('(')[0].trim();
+                      return { name: baseIngredient, checked: false };
+                    });
+                    
+                    if (newItems.length > 0) {
+                      setShoppingList([...shoppingList, ...newItems]);
+                      alert('Ingredients added to shopping list!');
+                    } else {
+                      alert('All ingredients already in shopping list!');
+                    }
+                  }}
+                >
+                  <ShoppingBag size={16} className="mr-1" />
+                  Add to Shopping List
+                </button>
+                
+                <button
+                  className="px-4 py-2 rounded text-sm"
+                  style={{ backgroundColor: colors.primary, color: colors.white }}
+                  onClick={() => {
+                    // Create meal from recipe
+                    const mealTime = new Date().getHours() < 12 ? '08:00' : 
+                                   new Date().getHours() < 17 ? '12:30' : '18:00';
+                    const mealName = new Date().getHours() < 12 ? 'Breakfast' :
+                                   new Date().getHours() < 17 ? 'Lunch' : 'Dinner';
+                                   
+                    // Extract all ingredients from all components
+                    const allIngredients = Object.values(selectedRecipe.ingredientComponents || {}).flat();
+                    const baseIngredients = allIngredients.map(ingredient => ingredient.split('(')[0].trim());
+                                   
+                    const newMealItem = {
+                      id: meals.length + 1,
+                      name: mealName + ': ' + selectedRecipe.name,
+                      time: mealTime,
+                      foods: baseIngredients,
+                      day: selectedDay
+                    };
+                    
+                    setMeals([...meals, newMealItem]);
+                    setShowRecipeModal(false);
+                    alert('Recipe added to your meal plan!');
+                  }}
+                >
+                  Add to Meal Plan
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <div className="mb-4">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search recipes..."
+                    className="w-full p-2 pl-8 border rounded"
+                  />
+                  <Search size={16} className="absolute left-2 top-3 text-gray-400" />
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <h3 className="font-medium mb-2">Recommended for You</h3>
+                <p className="text-sm text-gray-600 mb-4">Based on your Trigger Food Navigator test results and safe foods</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {safeRecipes.map(recipe => (
+                    <div 
+                      key={recipe.id}
+                      className="border rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                      onClick={() => setSelectedRecipe(recipe)}
+                    >
+                      <img 
+                        src={recipe.image} 
+                        alt={recipe.name} 
+                        className="w-full h-32 object-cover"
+                      />
+                      <div className="p-3">
+                        <h4 className="font-medium">{recipe.name}</h4>
+                        <p className="text-xs text-gray-600 mb-2 line-clamp-2">{recipe.description}</p>
+                        <div className="flex flex-wrap gap-1 mb-2">
+                          <span 
+                            className="text-xs px-2 py-1 rounded-full"
+                            style={{ backgroundColor: colors.highlight + '20', color: colors.secondary }}
+                          >
+                            {recipe.calories} cal
+                          </span>
+                          <span 
+                            className="text-xs px-2 py-1 rounded-full"
+                            style={{ backgroundColor: colors.primary + '15', color: colors.primary }}
+                          >
+                            {recipe.prepTime + recipe.cookTime} min
+                          </span>
+                          <span 
+                            className="text-xs px-2 py-1 rounded-full"
+                            style={{ backgroundColor: colors.accent + '15', color: colors.accent }}
+                          >
+                            {Object.values(recipe.ingredientComponents || {}).flat().length} ingredients
+                          </span>
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          Components: {Object.keys(recipe.ingredientComponents || {}).join(', ')}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="rounded-lg p-4 border border-dashed border-gray-300 text-center">
+                <h4 className="font-medium mb-2">Component-Based Cooking</h4>
+                <p className="text-sm text-gray-600 mb-3">
+                  Our recipes are organized by components (like Sauce, Protein, Vegetables) to help you understand 
+                  how meals are structured and make substitutions easier.
+                </p>
+                <button
+                  className="px-4 py-2 rounded text-sm"
+                  style={{ backgroundColor: colors.accent, color: colors.white }}
+                >
+                  Learn More About Components
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// This file demonstrates the component-based ingredient organization feature
+// Key improvements:
+// 1. Ingredients are organized into logical components (Sauce, Noodles, Protein, etc.)
+// 2. Each component is clearly labeled and visually separated
+// 3. Users can understand the meal structure at a glance
+// 4. Makes ingredient substitutions and meal planning easier
+// 5. Provides better organization for complex recipes like Drunken Noodles
+
+export { safeRecipes, renderIngredientComponents, RecipeModal }; 
