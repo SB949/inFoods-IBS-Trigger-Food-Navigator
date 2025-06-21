@@ -1,36 +1,14 @@
-# Trigger Food Navigator - Version 2 Deployment Guide
-
-## 🚀 Quick Start for Developers
-
-This is **Version 2** of the Trigger Food Navigator. This document provides everything needed to deploy the updated version to replace Version 1 currently on the website.
-
-## 📋 What's New in Version 2
-
-### Key Updates
-- **Enhanced Recipe Database**: Expanded from ~100 to 200+ recipes
-- **Improved API Structure**: Better organized Cloudflare Worker endpoints
-- **TypeScript Migration**: Enhanced type safety and developer experience
-- **Performance Optimizations**: Faster loading and better caching
-- **Bug Fixes**: Resolved issues from Version 1 feedback
-
-### Technical Improvements
-- Modular endpoint structure in `/src/endpoints/`
-- Proper TypeScript interfaces and validation
-- Enhanced error handling
-- Better CORS configuration
-- Optimized static asset serving
+# Trigger Food Navigator
 
 ## 🏗️ Project Architecture
 
 ### Frontend
-- **Main Application**: `Trigger Food Navigator.html` (Single-page application)
-- **Static Assets**: Recipe images, icons, and other resources
-- **Local Development Server**: `server.py` for testing
+- **Main Application**: Trigger Food Navigator Webflow page
 
 ### Backend (Cloudflare Worker)
 - **API Endpoints**: `/src/endpoints/` directory
-- **Data Sources**: JSON recipe databases
-- **Static Assets**: Served via Cloudflare Workers
+- **Data Sources**: `recipes.json` recipe database
+- **Static Assets**: Served via Cloudflare Worker
 - **Configuration**: `wrangler.jsonc`
 
 ## 📁 Project Structure
@@ -56,6 +34,7 @@ Trigger Food Navigator/
 
 On the webflow side, the `Trigger Food Navigator.html` page is inserted using the [Custom Code Embed](https://help.webflow.com/hc/en-us/articles/33961332238611-Custom-code-embed#how-to-add-a-code-embed-element) element.
 Due to the limitation of 50000 lines of code per a single embed, the code is split across multiple elements.
+**Note**: Code in the Webflow page may be different from the `Trigger Food Navigator.html` file. Whenever you need to modify the code, consider edit it directly in Webflow.
 
 ## 🥗 Manage recipes database
 Recipes database and their pictures are served by the Cloudflare Worker.
@@ -68,7 +47,7 @@ Recipes database and their pictures are served by the Cloudflare Worker.
 
 ## 🚀 Deployment Instructions
 
-### Step 1: Cloudflare Worker Deployment
+### Cloudflare Worker Deployment
 
 #### Prerequisites
 - Cloudflare account with Workers enabled
@@ -88,25 +67,9 @@ wrangler deploy
 - **Environment Variables**: Already configured in `wrangler.jsonc`
 - **Static Assets**: Recipe images and other assets served from `/static/` directory
 
-### Step 2: Frontend Deployment
-
-#### Main Application File
-- Deploy `Trigger Food Navigator.html` to your web server
-- This file contains the complete frontend application
-- No additional build process required
-
-#### Update API Endpoints (if needed)
-If your Cloudflare Worker URL differs from the current setup, update the API endpoints in `Trigger Food Navigator.html`:
-
-```javascript
-// Look for these API calls and update the base URL:
-const API_BASE_URL = 'https://your-worker-name.your-subdomain.workers.dev';
-```
-
-### Step 3: Static Assets
+### Static Assets
 - Recipe images are served through the Cloudflare Worker
 - No separate CDN setup required
-- Images are automatically optimized and cached
 
 ## 🔧 Local Development
 
@@ -129,6 +92,7 @@ wrangler dev
 
 ### Available Endpoints
 - **GET `/recipes`**: Returns all available recipes
+- **POST `/verify`**: Verify the order number
 - **Static Assets**: Served from `/static/` path
 
 ### Recipe API Response Format
@@ -136,36 +100,35 @@ wrangler dev
 {
   "recipes": [
     {
-      "id": 1,
-      "name": "Recipe Name",
-      "mealType": "breakfast|lunch|dinner|snack",
-      "calories": 350,
-      "ingredients": ["ingredient1", "ingredient2"],
-      "instructions": ["step1", "step2"],
+      "id": "88",
+      "name": "Garlic Fries",
+      "mealType": "side",
+      "calories": 264,
+      "ingredients": [
+        "3 cloves garlic, minced",
+        "2 tablespoons canola oil",
+        "3 large baking potatoes, 12 ounces each",
+        "1/2 teaspoon salt",
+        "1 tablespoon finely chopped fresh parsley leaves"
+      ],
+      "instructions": "1. Preheat the oven to 450 degrees F.\n\n2. Heat the garlic and oil in a small saucepan over medium heat for 2 minutes. Strain the garlic from the oil with a small mesh strainer. Set both garlic and oil aside.\n\n3. Cut the potatoes into 1/4-inch sticks. In a large bowl, toss the oil, potatoes and 1/2 teaspoon of salt.\n\n4. Spray a baking sheet with cooking spray and spread the potatoes onto it in a single layer. Bake until golden and crisp, about 35 minutes.\n\n5. Remove potatoes from the tray with a metal spatula. Toss with parsley, reserved garlic, and additional salt, to taste. Serve immediately.",
       "isVegetarian": true,
-      "isVegan": false,
+      "isVegan": true,
       "macros": {
-        "protein": 15,
-        "carbs": 45,
-        "fat": 12
+        "protein": 6,
+        "carbs": 47,
+        "fat": 7,
+        "saturatedFat": 0.5,
+        "fiber": 3.5,
+        "sugar": 2,
+        "cholesterol": 0,
+        "sodium": 304
       },
-      "image": "recipe-image.jpg"
+      "image": "recipe images/Garlic Fries.jpg"
     }
   ]
 }
 ```
-
-## 🔄 Migration from Version 1
-
-### What to Replace
-1. **Frontend**: Replace the existing HTML file with `Trigger Food Navigator.html`
-2. **API**: Deploy the new Cloudflare Worker to replace existing backend
-3. **Assets**: Recipe images are now served through the Worker
-
-### Backup Recommendations
-- Backup current Version 1 files before deployment
-- Test the new version on a staging environment first
-- Monitor for any API endpoint changes needed
 
 ## 🐛 Troubleshooting
 
@@ -188,23 +151,10 @@ The application includes console logging for debugging. Open browser developer t
 
 ## 📊 Performance Considerations
 
-### Optimizations Included
-- **Lazy Loading**: Recipe images load on demand
-- **Caching**: Cloudflare automatically caches static assets
-- **Compression**: Worker serves compressed responses
-- **CDN**: Global distribution through Cloudflare network
-
 ### Monitoring
 - Use Cloudflare Analytics to monitor Worker performance
 - Check browser console for any JavaScript errors
 - Monitor API response times
-
-## 🔐 Security Features
-
-### Data Protection
-- No sensitive user data stored
-- CORS properly configured
-- Input validation on all API endpoints
 
 ### Environment Variables
 Sensitive configuration is stored in Cloudflare environment variables (already configured):
@@ -228,18 +178,3 @@ Sensitive configuration is stored in Cloudflare environment variables (already c
 - **v1.0.0** - Initial release (currently on website)
 - **v2.0.0** - This version (enhanced features, expanded recipes, improved architecture)
 
----
-
-## 🎯 Deployment Checklist
-
-- [ ] Cloudflare Worker updated successfully
-- [ ] Worker endpoints responding correctly
-- [ ] Frontend HTML file uploaded to web server
-- [ ] Recipe images loading properly
-- [ ] API connections working
-- [ ] CORS configured correctly
-- [ ] Performance testing completed
-- [ ] Version 1 backed up
-- [ ] Staging environment tested
-
-**Ready for production deployment!** 🚀 
