@@ -52,6 +52,15 @@ Trigger Food Navigator/
 └── data/                         # Additional data files
 ```
 
+## 🥗 Manage recipes database
+Recipes database and their pictures are served by the Cloudflare Worker.
+
+### How to add new recipes:
+- put your recipe image into the `Cloudflare Worker/static/recipe-images` directory;
+- add recipe data to the `recipes` array of the `Cloudflare Worker/src/data/recipes.json` file;
+- the `image` field of the new data entry should follow the next pattern `recipe images/Image File Name.file-extension`. Check the existing recipes for a reference;
+- deploy the Worker by following deployment instructions below.
+
 ## 🚀 Deployment Instructions
 
 ### Step 1: Cloudflare Worker Deployment
