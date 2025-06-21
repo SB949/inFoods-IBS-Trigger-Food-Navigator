@@ -52,6 +52,11 @@ Trigger Food Navigator/
 └── data/                         # Additional data files
 ```
 
+### Trigger Food Navigator Webflow Page
+
+On the webflow side, the `Trigger Food Navigator.html` page is inserted using the [Custom Code Embed](https://help.webflow.com/hc/en-us/articles/33961332238611-Custom-code-embed#how-to-add-a-code-embed-element) element.
+Due to the limitation of 50000 lines of code per a single embed, the code is split across multiple elements.
+
 ## 🥗 Manage recipes database
 Recipes database and their pictures are served by the Cloudflare Worker.
 
