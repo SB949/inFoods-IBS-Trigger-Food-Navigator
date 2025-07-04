@@ -65,7 +65,7 @@
       color: var(--text);
       font-size: var(--base-font);
       margin: 0;
-      padding: 20px;
+      padding: 0;
       overflow-x: hidden;
     }
     
@@ -3779,8 +3779,16 @@
       
       verifyBtn.onclick = async function() {
         const code = Array.from(inputs).map(input => input.value).join('');
+
+        const response = await fetch("/api/verify", {
+          method: "POST",
+          body: JSON.stringify({
+            verification_code: code,
+          })
+        });
+        const result = await response.json();
         
-        if (code.length === 7) {
+        if (result.success === true) {
           // Show success message
           verificationMessage.textContent = 'Verification successful!';
           verificationMessage.style.color = '#00ff00';
@@ -3810,7 +3818,8 @@
             }
           }
         } else {
-          verificationMessage.textContent = 'Please enter a 7-character code';
+          const message = code.length !== 7 ? 'Please enter a 7-character code' : 'Verification failed'
+          verificationMessage.textContent = message;
           verificationMessage.style.color = '#ff3333';
           verificationMessage.style.display = 'block';
         }

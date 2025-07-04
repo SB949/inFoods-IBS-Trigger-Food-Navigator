@@ -40,8 +40,10 @@ export class Verify extends OpenAPIRoute {
     const verificationCode = data.body.verification_code.trim();
     let success = false;
 
+    console.info(`Attempting verification. Code: ${verificationCode}`);
+
     const transformForCompare = (v: string) => {
-      return v.toLocaleUpperCase().replace(/\W/g, "");
+      return v.toUpperCase().replace(/\W/g, "");
     };
 
     for (const formId of formIds) {
@@ -73,8 +75,9 @@ export class Verify extends OpenAPIRoute {
       }
     }
 
-    return {
-      success,
-    };
+    const result = { success };
+    console.info(`Verification result: ${result}`);
+
+    return result;
   }
 }
