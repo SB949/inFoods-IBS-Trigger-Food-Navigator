@@ -4,7 +4,7 @@
  */
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "replacement-planner-api",
+  "name": "trigger-food-navigator",
   "main": "src/index.ts",
   "compatibility_date": "2025-04-04",
   "observability": {
@@ -35,7 +35,8 @@
     "ALLOWED_ORIGINS": [
       "https://www.infoodsibs.com",
       "https://infoodsibs.com",
-      "https://infoods.webflow.io"
+      "https://infoods.webflow.io",
+      "https://trigger-food-navigator.sbehbahani.workers.dev"
     ]
   },
   /**

@@ -20,7 +20,9 @@ openapi.use(
         return origin;
       }
 
-      return c.env.ALLOWED_ORIGINS;
+      return c.env.ALLOWED_ORIGINS.some((allowed) =>
+        origin.startsWith(allowed)
+      );
     },
   })
 );
