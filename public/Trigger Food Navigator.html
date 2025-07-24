@@ -3950,6 +3950,8 @@
 
     // Helper function to get unique random meals
     function getUniqueRandomMeals(recipes, count) {
+      console.log(`getUniqueRandomMeals called with ${recipes.length} recipes, requesting ${count} meals`);
+      
       // Safety check for empty recipes array
       if (!recipes || recipes.length === 0) {
         console.log('No recipes available for selection');
@@ -3964,10 +3966,11 @@
       
       // Get meals that haven't been shown in this cycle
       const availableRecipes = recipes.filter(recipe => !shownMealIds.has(recipe.id));
-      console.log('Available recipes for random selection:', availableRecipes);
+      console.log(`Available recipes for random selection: ${availableRecipes.length}`);
       
       // If no recipes are available after filtering, reset and try one more time
       if (availableRecipes.length === 0) {
+        console.log('No available recipes, clearing shown meals and trying again');
         shownMealIds.clear();
         const retryRecipes = recipes.filter(recipe => !shownMealIds.has(recipe.id));
         if (retryRecipes.length === 0) {
@@ -3979,16 +3982,22 @@
       
       const selectedRecipes = [];
       const numToSelect = Math.min(count, availableRecipes.length);
+      console.log(`Selecting ${numToSelect} recipes from ${availableRecipes.length} available`);
+      
+      // Create a copy of availableRecipes to avoid mutating the original
+      const recipesCopy = [...availableRecipes];
       
       // Select random recipes
       for (let i = 0; i < numToSelect; i++) {
-        const randomIndex = Math.floor(Math.random() * availableRecipes.length);
-        const selectedRecipe = availableRecipes[randomIndex];
+        const randomIndex = Math.floor(Math.random() * recipesCopy.length);
+        const selectedRecipe = recipesCopy[randomIndex];
         selectedRecipes.push(selectedRecipe);
         shownMealIds.add(selectedRecipe.id);
-        availableRecipes.splice(randomIndex, 1);
+        console.log(`Selected recipe ${i + 1}: ${selectedRecipe.name} (ID: ${selectedRecipe.id})`);
+        recipesCopy.splice(randomIndex, 1);
       }
       
+      console.log(`getUniqueRandomMeals returning ${selectedRecipes.length} recipes`);
       return selectedRecipes;
     }
 
@@ -4145,29 +4154,94 @@
       });
 
       console.log('Filtered recipes:', filteredRecipes);
+      console.log('Number of filtered recipes:', filteredRecipes.length);
 
-      // Get exactly 3 random recipes
-      const selectedRecipes = getUniqueRandomMeals(filteredRecipes, 3);
-      console.log('Selected recipes:', selectedRecipes);
+      // Ensure we always have at least some recipes to show
+      if (filteredRecipes.length === 0) {
+        console.log('No suitable recipes found after filtering trigger foods, falling back to all recipes');
+        // Fall back to showing all recipes if none match the criteria
+        filteredRecipes = recipes.filter(recipe => {
+          // Still apply dietary and meal type filters, but ignore trigger foods
+          if (selectedDietaryPreference === 'vegetarian' && !recipe.isVegetarian) {
+            return false;
+          }
+          if (selectedDietaryPreference === 'vegan' && !recipe.isVegan) {
+            return false;
+          }
+          
+          if (selectedMealType !== 'any') {
+            const recipeMealType = (recipe.mealType || '').toLowerCase();
+            if (recipeMealType !== 'any' && recipeMealType !== selectedMealType) {
+              return false;
+            }
+          }
+          
+          return true;
+        });
+        
+        if (filteredRecipes.length === 0) {
+          // If still no recipes, show all recipes
+          filteredRecipes = [...recipes];
+        }
+      }
+
+      // Get 3 random recipes, ensuring we always get 3 even if we need to repeat some
+      let selectedRecipes = getUniqueRandomMeals(filteredRecipes, 3);
+      console.log('Selected recipes after getUniqueRandomMeals:', selectedRecipes);
+      console.log('Number of selected recipes:', selectedRecipes.length);
+
+      // Ensure we always have exactly 3 recipes to display
+      while (selectedRecipes.length < 3 && filteredRecipes.length > 0) {
+        console.log('Not enough recipes selected, adding more...');
+        // If we don't have enough, randomly add more from available recipes
+        const additionalNeeded = 3 - selectedRecipes.length;
+        const availableForReuse = filteredRecipes.filter(recipe => 
+          !selectedRecipes.some(selected => selected.id === recipe.id)
+        );
+        
+        if (availableForReuse.length === 0) {
+          // If no more unique recipes available, reuse existing ones
+          const reusableRecipes = [...filteredRecipes];
+          for (let i = 0; i < additionalNeeded; i++) {
+            const randomIndex = Math.floor(Math.random() * reusableRecipes.length);
+            selectedRecipes.push(reusableRecipes[randomIndex]);
+          }
+        } else {
+          // Add unique recipes
+          for (let i = 0; i < Math.min(additionalNeeded, availableForReuse.length); i++) {
+            const randomIndex = Math.floor(Math.random() * availableForReuse.length);
+            selectedRecipes.push(availableForReuse[randomIndex]);
+            availableForReuse.splice(randomIndex, 1);
+          }
+        }
+      }
+
+      // Ensure we have exactly 3 recipes
+      selectedRecipes = selectedRecipes.slice(0, 3);
+      console.log('Final selected recipes:', selectedRecipes);
+      console.log('Final number of selected recipes:', selectedRecipes.length);
 
       if (selectedRecipes.length === 0) {
-        console.log('No suitable recipes found after filtering');
+        console.log('No recipes available at all');
         replacementMealSection.innerHTML = `
           <div class="meal-card show">
-            <p>No meals found that exclude all selected trigger foods. Please try different selections.</p>
+            <p>No recipes loaded. Please try refreshing the page.</p>
           </div>
         `;
         return;
       }
 
       // Create and append exactly 3 recipe cards
-      const recipeCards = selectedRecipes.slice(0, 3).map(recipe => {
+      const recipeCards = selectedRecipes.map((recipe, index) => {
+        console.log(`Creating card ${index + 1} for recipe:`, recipe.name);
         const card = createRecipeCard(recipe);
         card.classList.add('show');
         return card;
       });
 
+      console.log('Created recipe cards:', recipeCards.length);
       replacementMealSection.append(...recipeCards);
+      console.log('Appended cards to replacement meal section');
     }
 
     // Add function to show replacement details in modal
