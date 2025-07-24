@@ -4,8 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Trigger Food Navigator</title>
-  <!-- Replace local fonts with Google Fonts -->
+  
+  <!-- Performance optimizations -->
+  <meta name="theme-color" content="#4489c9">
+  <meta name="description" content="Navigate IBS trigger foods and find safe meal alternatives with personalized recipe recommendations.">
+  
+  <!-- Preconnect to external domains for faster loading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Optimized font loading with font-display: swap for better performance -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Preload critical images -->
+  <link rel="preload" href="inFoods Logo.png" as="image" type="image/png">
   <style>
     /* Remove local font imports */
     /* Base styles and CSS variables */
@@ -63,10 +75,13 @@
       font-family: 'Poppins', sans-serif;
       background: var(--background);
       color: var(--text);
-      font-size: var(--base-font);
+      font-size: 16px; /* Base font size for better readability */
+      line-height: 1.6; /* Improved line height for readability */
       margin: 0;
       padding: 0;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     
     /* Header */
@@ -353,11 +368,20 @@
       margin: 2px;
       visibility: visible !important;
       opacity: 1 !important;
+      /* Enhanced touch targets */
+      min-width: 44px;
+      -webkit-tap-highlight-color: rgba(81, 186, 173, 0.3);
+      user-select: none;
     }
 
     .food-item:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .food-item:active {
+      transform: scale(0.98);
+      transition: transform 0.1s ease;
     }
 
     .food-item img {
@@ -367,6 +391,7 @@
       margin-bottom: 5px;
       border-radius: 4px;
       background: #f5f5f5;
+      pointer-events: none; /* Prevent image selection on touch */
     }
 
     .food-toggle-btn {
@@ -375,17 +400,27 @@
       color: var(--text);
       font-size: 0.85em;
       cursor: pointer;
-      padding: 4px 8px;
+      padding: 8px 12px; /* Increased padding for better touch targets */
       text-align: center;
       width: 100%;
       font-weight: 500;
       border-radius: 4px;
       transition: all 0.2s ease;
       margin-top: auto;
+      min-height: 44px; /* Minimum touch target size */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: rgba(81, 186, 173, 0.3);
     }
 
     .food-toggle-btn:hover {
       background-color: rgba(81, 186, 173, 0.1);
+    }
+
+    .food-toggle-btn:active {
+      background-color: rgba(81, 186, 173, 0.2);
+      transform: scale(0.98);
     }
 
     .food-item.selected {
@@ -411,17 +446,25 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 20px;
+      padding: 12px 20px; /* Increased padding for touch */
       border: none;
       border-radius: 5px;
       background: var(--primary);
       color: white;
       cursor: pointer;
       transition: all 0.3s ease;
+      min-height: 44px; /* Minimum touch target size */
+      user-select: none;
+      -webkit-tap-highlight-color: rgba(81, 186, 173, 0.3);
     }
 
     .preference-option:hover {
       background: var(--accent);
+    }
+
+    .preference-option:active {
+      transform: scale(0.98);
+      transition: transform 0.1s ease;
     }
 
     .preference-option input[type="radio"] {
@@ -431,6 +474,7 @@
     .preference-option label {
       cursor: pointer;
       color: white;
+      pointer-events: none; /* Prevent label selection issues on touch */
     }
 
     .preference-option.selected {
@@ -485,17 +529,36 @@
     }
 
     .button-group button {
-      padding: 10px 20px;
+      padding: 12px 24px; /* Increased padding for touch */
       border: none;
       border-radius: 5px;
       background: var(--primary);
       color: white;
       cursor: pointer;
       transition: all 0.3s ease;
+      min-height: 44px; /* Minimum touch target size */
+      font-size: 1em;
+      font-weight: 500;
+      user-select: none;
+      -webkit-tap-highlight-color: rgba(81, 186, 173, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .button-group button:hover {
       background: var(--accent);
+    }
+
+    .button-group button:active {
+      transform: scale(0.98);
+      transition: transform 0.1s ease;
+    }
+
+    .button-group button:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
     }
 
     .fetch-recipes-btn {
@@ -1379,63 +1442,310 @@
       border-bottom: 2px solid var(--accent);
     }
 
-    /* Responsive Design */
-    @media (max-width: 768px) {
+    /* Enhanced Mobile-First Responsive Design */
+    
+    /* Responsive Typography */
+    
+    /* Extra Small Mobile (320px and up) */
+    @media (max-width: 320px) {
+      body {
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      
+      h1 { font-size: 1.4em; }
+      h2 { font-size: 1.2em; }
+      h3 { font-size: 1.1em; }
+      h4 { font-size: 1em; }
+      
+      p, li, span {
+        font-size: 0.9em;
+        line-height: 1.5;
+      }
+    }
+    
+    /* Mobile Styles (321px to 480px) */
+    @media (min-width: 321px) and (max-width: 480px) {
+      body {
+        font-size: 15px;
+        line-height: 1.5;
+      }
+      
+      h1 { font-size: 1.5em; }
+      h2 { font-size: 1.3em; }
+      h3 { font-size: 1.15em; }
+      h4 { font-size: 1.05em; }
+      
+      p, li, span {
+        font-size: 0.95em;
+        line-height: 1.5;
+      }
+    }
+    
+    /* Small Mobile (up to 480px) */
+    @media (max-width: 480px) {
+      
+      header {
+        height: 50px;
+        padding: 0 10px;
+      }
+      
+      .header-content {
+        gap: 5px;
+      }
+      
+      .logo {
+        height: 25px;
+      }
+      
+      header h1 {
+        font-size: 1.1em;
+      }
+      
+      .theme-switch {
+        right: 10px;
+        font-size: 0.8em;
+      }
+      
+      .theme-switch-icon {
+        width: 18px;
+        height: 18px;
+      }
+      
+      /* Make verification form mobile-friendly */
+      .form {
+        margin: 10px;
+        padding: 20px;
+        max-width: calc(100vw - 20px);
+      }
+      
+      .input-fields {
+        gap: 4px;
+      }
+      
+      .input-fields input {
+        width: 2em;
+        height: 2em;
+        font-size: 1.2rem;
+      }
+      
+      /* Main wrapper - stack everything vertically */
       .main-wrapper {
         flex-direction: column;
+        gap: 15px;
+      }
+      
+      #savedMealsPanel, #rightToolsPanel {
+        width: 100%;
+        min-height: auto;
+        max-height: none;
+        border: none;
+        border-bottom: 1px solid var(--accent);
+        padding: 15px 10px;
+      }
+      
+      #mainContentInner {
+        padding: 0 10px;
+      }
+      
+      /* Food selection grid - smaller items on mobile */
+      .food-selection {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 8px;
+        padding: 10px 5px;
+      }
+      
+      .food-item {
+        padding: 8px;
+        font-size: 0.8em;
+        min-height: 80px;
+      }
+      
+      .food-item img {
+        width: 30px;
+        height: 30px;
+      }
+      
+      /* Preference selection - stack vertically */
+      .preference-selection {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+      }
+      
+      .preference-option {
+        padding: 12px 15px;
+        width: 100%;
+        justify-content: center;
+      }
+      
+      /* Button group */
+      .button-group {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+      }
+      
+      .button-group button {
+        padding: 12px 20px;
+        font-size: 1em;
+        width: 100%;
+      }
+      
+      /* Meal cards - full width on small mobile */
+      .meal-card {
+        min-width: 100% !important;
+        max-width: 100% !important;
+        margin: 8px 0 !important;
+        padding: 15px !important;
+        height: auto !important;
+      }
+      
+      .meal-card img {
+        height: 160px;
+      }
+      
+      /* Modal adjustments for mobile */
+      .recipe-modal .modal-content {
+        width: 95vw !important;
+        max-width: 95vw !important;
+        margin: 10px auto !important;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      
+      .recipe-modal-image {
+        height: 180px;
+      }
+      
+      /* Replacement display cards */
+      #replacementDisplay {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px 5px;
+      }
+      
+      .replacement-card {
+        min-width: 100%;
+        max-width: 100%;
+        margin: 5px 0;
+      }
+      
+      /* Touch-friendly targets */
+      .save-meal-btn, .remove-meal-btn, .add-to-saved {
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
+      }
+      
+      /* Ingredient checker mobile optimization */
+      #ingredientInput {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 12px;
+      }
+    }
+
+    /* Tablet Styles (481px to 768px) */
+    @media (min-width: 481px) and (max-width: 768px) {
+      header {
+        height: 55px;
+        padding: 0 15px;
+      }
+      
+      .logo {
+        height: 35px;
+      }
+      
+      header h1 {
+        font-size: 1.3em;
+      }
+      
+      .main-wrapper {
+        flex-direction: column;
+        gap: 20px;
       }
 
       #savedMealsPanel {
         width: 100%;
         border-right: none;
         border-bottom: 2px solid var(--accent);
-        max-height: 200px;
+        max-height: 250px;
+        overflow-y: auto;
       }
 
       #rightToolsPanel {
         width: 100%;
         border-left: none;
         border-top: 2px solid var(--accent);
-        max-height: 300px;
+        max-height: 350px;
+        overflow-y: auto;
       }
 
       #replacementMeal {
-        flex-direction: column;
-        align-items: center;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
       }
 
       .meal-card {
-        min-width: 280px !important;
-        max-width: 100% !important;
-        margin: 10px 0 !important;
+        min-width: 300px !important;
+        max-width: 400px !important;
+        margin: 10px !important;
+        flex: 0 1 calc(50% - 20px);
       }
 
       .food-selection {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      }
-
-      .preference-selection {
-        flex-direction: column;
-      }
-
-      .header-content {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
         gap: 10px;
       }
 
-      .logo {
-        height: 30px;
+      .preference-selection {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
       }
 
-      header h1 {
-        font-size: 1.4em;
+      .preference-option {
+        flex: 1;
+        min-width: 200px;
       }
-
-      .meal-image {
-        height: 150px;
+      
+      .button-group {
+        flex-direction: row;
+        justify-content: center;
       }
-
-      .recipe-modal-image {
-        height: 200px;
+      
+      #replacementDisplay {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .replacement-card {
+        flex: 1 1 calc(50% - 10px);
+        min-width: 280px;
+        max-width: calc(50% - 10px);
+      }
+    }
+    
+    /* Small Desktop (769px to 1024px) */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .meal-card {
+        min-width: 280px;
+        max-width: 350px;
+        flex: 0 1 calc(33.333% - 20px);
+      }
+      
+      #replacementMeal {
+        justify-content: center;
+        gap: 15px;
+      }
+      
+      .replacement-card {
+        flex: 1 1 calc(33.333% - 15px);
+        min-width: 250px;
+        max-width: calc(33.333% - 15px);
       }
     }
 
@@ -1845,13 +2155,83 @@
       color: var(--accent);
     }
 
-    /* Add CSS to improve modal interaction */
+    /* Enhanced CSS for improved modal interaction */
     .recipe-modal, .replacement-modal {
       cursor: pointer;
+      /* Prevent background scroll on mobile */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10000;
     }
     
     .recipe-modal-content, .replacement-modal-content {
       cursor: default;
+      /* Smooth scrolling on iOS */
+      -webkit-overflow-scrolling: touch;
+      /* Prevent content behind modal from being touchable */
+      touch-action: auto;
+    }
+
+    /* Enhanced modal styles for mobile */
+    @media (max-width: 480px) {
+      .recipe-modal, .replacement-modal {
+        padding: 5px;
+      }
+      
+      .recipe-modal-content, .replacement-modal-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        border-radius: 8px 8px 0 0;
+        max-height: 95vh;
+        overflow-y: auto;
+        position: relative;
+      }
+      
+      .close-modal-btn {
+        position: sticky;
+        top: 0;
+        z-index: 1001;
+        background: var(--primary) !important;
+        color: white !important;
+        width: 100%;
+        padding: 15px !important;
+        font-size: 1.1em !important;
+        border-radius: 0 !important;
+        margin-bottom: 10px;
+        min-height: 44px;
+      }
+      
+      .recipe-modal-body {
+        padding: 20px 15px !important;
+      }
+      
+      .recipe-modal-image {
+        height: 200px !important;
+        border-radius: 0 !important;
+      }
+    }
+
+    /* Add touch-friendly scroll indicators */
+    @media (max-width: 768px) {
+      .recipe-modal-content::-webkit-scrollbar,
+      .replacement-modal-content::-webkit-scrollbar {
+        width: 6px;
+      }
+      
+      .recipe-modal-content::-webkit-scrollbar-track,
+      .replacement-modal-content::-webkit-scrollbar-track {
+        background: rgba(0,0,0,0.1);
+      }
+      
+      .recipe-modal-content::-webkit-scrollbar-thumb,
+      .replacement-modal-content::-webkit-scrollbar-thumb {
+        background: var(--accent);
+        border-radius: 3px;
+      }
     }
 
     /* Add styles for trigger food labels */
@@ -6537,6 +6917,244 @@
       
       return hiddenSources;
     }
+
+    // Mobile Interaction Enhancements
+    
+    // Prevent background scroll when modal is open
+    function preventBackgroundScroll(enable) {
+      const body = document.body;
+      if (enable) {
+        body.style.overflow = 'hidden';
+        body.style.position = 'fixed';
+        body.style.width = '100%';
+        body.style.top = `-${window.scrollY}px`;
+      } else {
+        const scrollY = body.style.top;
+        body.style.overflow = '';
+        body.style.position = '';
+        body.style.width = '';
+        body.style.top = '';
+        if (scrollY) {
+          window.scrollTo(0, parseInt(scrollY || '0') * -1);
+        }
+      }
+    }
+
+    // Enhanced modal handling for mobile
+    function enhanceModalForMobile(modal) {
+      // Prevent background scroll
+      preventBackgroundScroll(true);
+      
+      // Add swipe-to-close functionality
+      let startY = 0;
+      let currentY = 0;
+      let isDragging = false;
+      
+      const modalContent = modal.querySelector('.recipe-modal-content, .replacement-modal-content');
+      
+      if (modalContent && window.innerWidth <= 768) {
+        modalContent.addEventListener('touchstart', (e) => {
+          startY = e.touches[0].clientY;
+          isDragging = true;
+        }, { passive: true });
+        
+        modalContent.addEventListener('touchmove', (e) => {
+          if (!isDragging) return;
+          currentY = e.touches[0].clientY;
+          const deltaY = currentY - startY;
+          
+          // Only allow pull-down if scrolled to top
+          if (modalContent.scrollTop === 0 && deltaY > 0) {
+            e.preventDefault();
+            const opacity = Math.max(0.5, 1 - deltaY / 300);
+            modal.style.backgroundColor = `rgba(0, 0, 0, ${opacity * 0.5})`;
+            modalContent.style.transform = `translateY(${Math.min(deltaY, 100)}px)`;
+          }
+        }, { passive: false });
+        
+        modalContent.addEventListener('touchend', () => {
+          if (!isDragging) return;
+          isDragging = false;
+          
+          const deltaY = currentY - startY;
+          if (deltaY > 100 && modalContent.scrollTop === 0) {
+            // Close modal if pulled down enough
+            modal.remove();
+            preventBackgroundScroll(false);
+          } else {
+            // Reset position
+            modal.style.backgroundColor = '';
+            modalContent.style.transform = '';
+          }
+        }, { passive: true });
+      }
+      
+      // Enhanced close button
+      const closeBtn = modal.querySelector('.close-modal-btn');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          preventBackgroundScroll(false);
+        });
+      }
+      
+      // Close on background click (enhanced for mobile)
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.remove();
+          preventBackgroundScroll(false);
+        }
+      });
+    }
+
+    // Add haptic feedback for supported devices
+    function addHapticFeedback(element) {
+      if ('vibrate' in navigator) {
+        element.addEventListener('touchstart', () => {
+          navigator.vibrate(10); // Short vibration
+        }, { passive: true });
+      }
+    }
+
+    // Performance optimizations
+    
+    // Lazy loading for images
+    function setupLazyLoading() {
+      const images = document.querySelectorAll('img[data-src]');
+      
+      if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              img.src = img.dataset.src;
+              img.classList.remove('lazy');
+              observer.unobserve(img);
+            }
+          });
+        }, {
+          rootMargin: '50px 0px' // Start loading 50px before image enters viewport
+        });
+
+        images.forEach(img => imageObserver.observe(img));
+      } else {
+        // Fallback for browsers without IntersectionObserver
+        images.forEach(img => {
+          img.src = img.dataset.src;
+          img.classList.remove('lazy');
+        });
+      }
+    }
+
+    // Optimize image loading in dynamically created content
+    function optimizeImages(container) {
+      const images = container.querySelectorAll('img');
+      images.forEach(img => {
+        // Add loading="lazy" for native lazy loading support
+        img.loading = 'lazy';
+        
+        // Add error handling
+        img.onerror = function() {
+          this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2Y1ZjVmNSIvPjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+SW1hZ2UgRXJyb3I8L3RleHQ+PC9zdmc+';
+        };
+      });
+    }
+
+    // Debounce function for scroll events
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    // Performance monitoring
+    function logPerformanceMetrics() {
+      if ('performance' in window) {
+        window.addEventListener('load', () => {
+          setTimeout(() => {
+            const navigation = performance.getEntriesByType('navigation')[0];
+            if (navigation) {
+              console.log('Page Load Time:', navigation.loadEventEnd - navigation.fetchStart, 'ms');
+              console.log('DOMContentLoaded:', navigation.domContentLoadedEventEnd - navigation.fetchStart, 'ms');
+            }
+          }, 0);
+        });
+      }
+    }
+
+    // Apply mobile enhancements and performance optimizations on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      // Setup lazy loading
+      setupLazyLoading();
+      
+      // Log performance metrics in development
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        logPerformanceMetrics();
+      }
+      
+      // Add haptic feedback to buttons and interactive elements
+      const interactiveElements = document.querySelectorAll(
+        '.food-item, .preference-option, .button-group button, .save-meal-btn, .remove-meal-btn'
+      );
+      
+      interactiveElements.forEach(addHapticFeedback);
+      
+      // Enhanced touch handling for food items
+      const foodItems = document.querySelectorAll('.food-item');
+      foodItems.forEach(item => {
+        item.addEventListener('touchstart', function() {
+          this.style.transform = 'scale(0.95)';
+        }, { passive: true });
+        
+        item.addEventListener('touchend', function() {
+          setTimeout(() => {
+            if (!this.classList.contains('selected')) {
+              this.style.transform = '';
+            }
+          }, 100);
+        }, { passive: true });
+      });
+      
+      // Optimize scroll performance on mobile
+      if (window.innerWidth <= 768) {
+        const scrollElements = document.querySelectorAll('#savedMealsPanel, #rightToolsPanel, #replacementMeal');
+        scrollElements.forEach(element => {
+          element.style.webkitOverflowScrolling = 'touch';
+        });
+      }
+      
+      // Optimize dynamically loaded images
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === 1) { // Element node
+              optimizeImages(node);
+            }
+          });
+        });
+      });
+      
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    });
+
+    // Override existing modal creation functions to include mobile enhancements
+    const originalCreateRecipeModal = window.createRecipeModal || function() {};
+    window.createRecipeModal = function(...args) {
+      const result = originalCreateRecipeModal.apply(this, args);
+      const modal = document.querySelector('.recipe-modal:last-child');
+      if (modal) {
+        enhanceModalForMobile(modal);
+      }
+      return result;
+    };
   </script>
 </body>
 </html>
