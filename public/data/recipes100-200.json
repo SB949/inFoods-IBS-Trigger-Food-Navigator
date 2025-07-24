@@ -532,6 +532,107 @@
         "sugar": 5,
         "protein": 19
       }
+    },
+    {
+      "id": "118",
+      "name": "Zucchini-Feta Fritters with Yogurt Dipping Sauce",
+      "mealType": "lunch",
+      "calories": 193,
+      "ingredients": [
+        "2 pounds zucchini (about 2 large)",
+        "Kosher salt and freshly ground black pepper",
+        "1 cup crumbled feta (about 5 ounces)",
+        "1 cup all-purpose flour",
+        "1/2 cup packed fresh mint leaves, finely chopped",
+        "1 teaspoon dried oregano",
+        "Pinch crushed red pepper flakes",
+        "2 large eggs, lightly beaten",
+        "1 clove garlic, grated",
+        "Juice of 1/2 lemon",
+        "1/2 cup olive oil",
+        "1 Persian cucumber (about 2 ounces)",
+        "1/2 cup full-fat Greek yogurt",
+        "1/4 cup fresh dill, finely chopped",
+        "2 cloves garlic, grated",
+        "Juice of 1 lemon"
+      ],
+      "instructions": "For the zucchini fritters: Grate the zucchini on the large holes of a box grater, transfer to a large colander set over a large bowl and toss with 2 teaspoons salt. Set another large, heavy bowl on top of the zucchini to press out as much moisture as possible, at least 30 minutes and up to 1 hour. Turn the zucchini out on top of 2 clean dish towels, squeeze out as much liquid as possible and transfer to a large bowl. Toss with the feta, flour, mint, oregano, red pepper flakes, eggs, garlic, lemon juice, 1 1/2 teaspoons salt and a few grinds of black pepper until well combined. Scoop a heaping 1/4 cup of the zucchini mixture, form into a 2 1/2-inch patty and place on a baking sheet. Repeat with the remaining zucchini mixture (you should have 12 patties). Refrigerate until firm, at least 30 minutes and up to 1 hour. For the yogurt sauce: Meanwhile, grate the cucumber on the large holes of a box grater and add to a medium bowl. Add the yogurt, dill, garlic, lemon juice, 1/2 teaspoon salt and a few grinds of black pepper and stir to combine. Refrigerate until ready to use. Line a baking sheet with paper towels. Heat the olive oil in a large skillet over medium heat until shimmering. Add 6 of the patties to the skillet and cook, untouched, until deep golden brown on the bottom (you can check the edges of the patties or gently lift with a spatula to check the bottoms), 5 to 6 minutes. Flip the patties and continue to cook, untouched, until a deep golden brown on the other side, 3 to 4 minutes. Transfer the patties to the prepared baking sheet. Repeat with the remaining 6 patties, decreasing the cooking time slightly if needed as the oil heats up. Let the patties cool to room temperature, 20 to 30 minutes. Serve with the yogurt sauce on the side.",
+      "isVegetarian": true,
+      "isVegan": false,
+      "macros": {
+        "fat": 13,
+        "saturatedFat": 4,
+        "cholesterol": 43,
+        "sodium": 344,
+        "carbs": 14,
+        "fiber": 2,
+        "sugar": 3,
+        "protein": 6
+      }
+    },
+    {
+      "id": "119",
+      "name": "Spiralized Zucchini Gratin",
+      "mealType": "dinner",
+      "calories": 388,
+      "ingredients": [
+        "2 pounds medium zucchini (about 4), ends trimmed",
+        "3 tablespoons olive oil",
+        "Kosher salt and freshly ground black pepper",
+        "1 1/2 cups half-and-half",
+        "6 ounces cream cheese, cubed, at room temperature",
+        "6 ounces dill Havarti cheese, shredded (about 1 1/2 cups)",
+        "1/4 cup panko breadcrumbs",
+        "2 tablespoons freshly grated Parmesan",
+        "Finely grated zest of 1 large lemon"
+      ],
+      "instructions": "Special equipment: a spiralizer; an 8-inch stainless steel ovenproof skillet. Use the thin noodle cutter of a spiralizer to cut the zucchini into noodles; you should have about 24 ounces noodles. Snip the noodles with kitchen shears to create shorter pieces (about 6 inches long) and set aside. Set a colander or fine-mesh strainer over a large bowl; set aside. Preheat the oven to broil. Heat 1 tablespoon of the oil in an 8-inch stainless steel ovenproof skillet over medium-high heat. Once shimmering, add half of the noodles, a large pinch of salt and several grinds of pepper and cook, tossing frequently with tongs, until the noodles are just softened and have released some liquid, about 3 minutes. Transfer to the colander to drain. Add another tablespoon of oil to the skillet and repeat the process with the remaining noodles. Turn off the heat and wipe out the skillet with a clean kitchen towel. Add the half-and-half to the skillet over medium heat and cook, stirring, until it just comes to a simmer. Reduce the heat to medium low and continue simmering until reduced to 1 cup, about 5 minutes. Add the cream cheese and dill Havarti and whisk until the sauce is smooth. Season with 1 teaspoon salt and several grinds of pepper. Toss the noodles in the colander and gently squeeze them to reduce any lingering liquid. Add the drained noodles to the cheese sauce and toss with tongs until evenly coated. Meanwhile, mix the panko, Parmesan, lemon zest, a pinch of salt and the remaining 1 tablespoon oil in a small bowl until evenly combined. Sprinkle over the noodle mixture. Broil until the top is golden brown and the cheese sauce is bubbling at the edges, about 1 minute. Let sit for 10 minutes before serving.",
+      "isVegetarian": true,
+      "isVegan": false,
+      "macros": {
+        "fat": 32,
+        "saturatedFat": 16,
+        "cholesterol": 81,
+        "sodium": 696,
+        "carbs": 13,
+        "fiber": 2,
+        "sugar": 8,
+        "protein": 14
+      }
+    },
+    {
+      "id": "120",
+      "name": "Chunky Potato Salad",
+      "mealType": "lunch",
+      "calories": 348,
+      "ingredients": [
+        "2 pounds russet potatoes, peeled and cut into 1-inch chunks",
+        "Kosher salt and freshly ground black pepper",
+        "2 tablespoons apple cider vinegar",
+        "3 large eggs",
+        "1 cup mayonnaise",
+        "1/4 cup sour cream",
+        "1/3 cup chopped dill pickles, plus 2 tablespoons brine",
+        "2 tablespoons yellow mustard",
+        "1/2 teaspoon sugar",
+        "3 stalks celery, chopped",
+        "4 scallions, thinly sliced",
+        "1/4 cup chopped fresh parsley",
+        "Paprika, for topping"
+      ],
+      "instructions": "Put the potatoes in a large saucepan; cover with cold water and season with 1 teaspoon salt. Bring to a simmer and cook until tender, 10 to 12 minutes. Drain and transfer to a large bowl. Add the vinegar and 1/2 teaspoon salt; toss. Let cool slightly, about 10 minutes. Meanwhile, put the eggs in a medium saucepan and cover with cold water. Bring to a boil, then remove from the heat and let sit, covered, 10 minutes. Drain the eggs and cover with ice water to cool; peel, chop and set aside. Whisk the mayonnaise, sour cream, pickle brine, mustard and sugar in a small bowl. Stir in the pickles, celery, scallions and parsley. Spoon the mayonnaise mixture over the potatoes and mix well. Season with salt and pepper. Add the hard-boiled eggs and gently stir to combine. Cover and refrigerate at least 2 hours or overnight. Sprinkle with paprika just before serving.",
+      "isVegetarian": true,
+      "isVegan": false,
+      "macros": {
+        "fat": 26,
+        "saturatedFat": 5,
+        "cholesterol": 85,
+        "sodium": 492,
+        "carbs": 24,
+        "fiber": 3,
+        "sugar": 2,
+        "protein": 6
+      }
     }
   ]
 } 
