@@ -3731,19 +3731,44 @@
   ]
 };
         
-        const loadedRecipes = [...(data1.recipes || []), ...(data2.recipes || [])];
-        console.log(`Successfully loaded ${loadedRecipes.length} recipes from embedded data`);
+        // Load external JSON files in addition to embedded data
+        let externalRecipes = [];
+        try {
+          const [response1, response2] = await Promise.all([
+            fetch('./data/recipes.json'),
+            fetch('./data/recipes100-200.json')
+          ]);
+          
+          if (response1.ok && response2.ok) {
+            const [jsonData1, jsonData2] = await Promise.all([
+              response1.json(),
+              response2.json()
+            ]);
+            externalRecipes = [...(jsonData1.recipes || []), ...(jsonData2.recipes || [])];
+            console.log(`Loaded ${jsonData1.recipes?.length || 0} recipes from recipes.json`);
+            console.log(`Loaded ${jsonData2.recipes?.length || 0} recipes from recipes100-200.json`);
+          } else {
+            console.warn('Could not load external JSON files, using embedded data only');
+          }
+        } catch (jsonError) {
+          console.warn('Error loading external JSON files, using embedded data only:', jsonError);
+        }
+        
+        // Combine embedded data with external JSON data, prioritizing external data
+        const loadedRecipes = externalRecipes.length > 0 ? externalRecipes : [...(data1.recipes || []), ...(data2.recipes || [])];
+        console.log(`Successfully loaded ${loadedRecipes.length} recipes from ${externalRecipes.length > 0 ? 'JSON files' : 'embedded data'}`);
         console.log('Sample recipe:', loadedRecipes[0]); // Log first recipe to verify structure
         
         if (loadedRecipes.length === 0) {
-          showNotification('No recipes found in the embedded data.', 'error');
+          showNotification('No recipes found in the recipe files.', 'error');
         } else {
-          showNotification(`Successfully loaded ${loadedRecipes.length} recipes!`, 'success');
+          const source = externalRecipes.length > 0 ? 'JSON files' : 'embedded data';
+          showNotification(`Successfully loaded ${loadedRecipes.length} recipes from ${source}!`, 'success');
         }
         
         return loadedRecipes;
       } catch (error) {
-        console.error('Error loading embedded recipes:', error);
+        console.error('Error loading recipes:', error);
         showNotification('Failed to load recipes. Please refresh the page and try again.', 'error');
         return [];
       } finally {
