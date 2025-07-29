@@ -1574,7 +1574,7 @@
         "sugar": 8,
         "protein": 25
       },
-      "image": "recipe images/Spaghetti no meat balls.jpg"
+      "image": "recipe images/Spaghetti and No-Meat Balls.jpg"
     },
     {
       "id": "50",
@@ -1722,7 +1722,7 @@
         "sugar": 8,
         "protein": 37
       },
-      "image": "recipe images/Braised Short Rib.jpg"
+      "image": "recipe images/Braised Short Ribs.jpg"
     },
     {
       "id": "54",
@@ -1998,7 +1998,7 @@
         "cholesterol": 138,
         "sodium": 1090
       },
-      "image": "recipe images/Fajita Steak Salad with Cilantro-Lime Vinaigrette.webp"
+      "image": "recipe images/Fajita Steak Salad with Cilantro-Lime Vinaigrette.jpeg"
     },
     {
       "id": "61",
@@ -2049,7 +2049,7 @@
         "cholesterol": 64,
         "sodium": 338
       },
-      "image": "recipe images/Chef's Salad.jpg"
+      "image": "recipe images/Chef's Salad with Buttermilk Ranch Dressing.jpg"
     },
     {
       "id": "62",
@@ -2776,7 +2776,7 @@
         "cholesterol": 151,
         "sodium": 380
       },
-      "image": "recipe images/Dark Chocolate Marzipan Scone Loaf.jpg"
+      "image": "recipe images/Dark Chocolate Marzipan Scone Loaf.webp"
     },
     {
       "id": "82",
@@ -2810,7 +2810,7 @@
         "cholesterol": 497,
         "sodium": 2231
       },
-      "image": "recipe images/Full Irish Breakfast.jpg"
+      "image": "recipe images/Full Irish Breakfast.webp"
     },
     {
       "id": "83",
@@ -3229,7 +3229,8 @@
         "fiber": 3,
         "sugar": 11,
         "protein": 13
-      }
+      },
+      "image": "recipe images/Barbecue Mushroom Pizza.jpg"
     },
     {
       "id": "96",
@@ -3329,6 +3330,7 @@
       "name": "Fish Chowder",
       "mealType": "dinner",
       "calories": 592,
+      "image": "recipe images/Fish Chowder.webp",
       "ingredients": [
         "8 slices thick-cut applewood-smoked bacon, diced, plus more cooked, crumbled bacon for garnish, optional",
         "3 stalks celery, sliced",
@@ -3364,6 +3366,7 @@
       "name": "Chicken and Noodles",
       "mealType": "dinner",
       "calories": 315,
+      "image": "recipe images/Chicken and Noodles.webp",
       "ingredients": [
         "One 2- to 3-pound chicken fryer, cut up",
         "2 carrots, diced",

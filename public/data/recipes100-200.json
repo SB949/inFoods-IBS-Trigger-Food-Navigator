@@ -206,6 +206,7 @@
       "name": "Tropical Oatmeal Smoothie",
       "mealType": "breakfast",
       "calories": 240,
+      "image": "recipe images/Tropical Oatmeal Smoothie.webp",
       "ingredients": [
         "1/2 cup old-fashioned rolled oats",
         "1 small banana, peeled and broken into 4 pieces",

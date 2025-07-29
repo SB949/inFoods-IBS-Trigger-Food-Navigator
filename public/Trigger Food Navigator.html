@@ -474,7 +474,6 @@
     .preference-option label {
       cursor: pointer;
       color: white;
-      pointer-events: none; /* Prevent label selection issues on touch */
     }
 
     .preference-option.selected {
@@ -795,7 +794,6 @@
       padding: 0;
       margin: 0;
     }
-
     .meal-card .cooks-notes li {
       padding: 4px 0;
       font-size: 0.85em;
@@ -1481,7 +1479,6 @@
         line-height: 1.5;
       }
     }
-    
     /* Small Mobile (up to 480px) */
     @media (max-width: 480px) {
       
@@ -2281,7 +2278,6 @@
       background: var(--primary);
       transform: scale(1.1);
     }
-
     /* Loading notification styles */
     .notification.loading {
       background: var(--card-bg);
@@ -2479,7 +2475,7 @@
       <img src="inFoods Logo.png" alt="inFoods Logo" class="auth-logo">
       <div class="info">
         <span class="title">Trigger Food Navigator</span>
-        <p class="description">Enter your 7-character verification code to access the meal planner.</p>
+        <p class="description">Enter your 7-character confirmation code found in your email receipt to access the meal planner.</p>
       </div>
       <div class="input-fields">
         <input type="text" maxlength="1" data-index="0" aria-label="First character">
@@ -2562,7 +2558,7 @@
       <div class="button-group">
         <button id="resetBtn">Reset Selections</button>
         <button id="fetchRecipesBtn" class="fetch-recipes-btn">
-          <span>Find Replacement Meals</span>
+          <span>Suggest Meals</span>
           <div class="loading-spinner"></div>
         </button>
       </div>
@@ -2605,7 +2601,6 @@
       </div>
     </aside>
   </div>
-      
   <script>
     // Data Definitions
     const triggerFoods = [
@@ -2788,8 +2783,8 @@
         "- Ginger zest",
         "For baking:",
         "- Cream of tartar",
-        "For vinegar replacement:",
-        "- Lemon juice (1:1 ratio) - Similar acidity and tang"
+        "For Lemon Juice replacement:",
+        "- Vinegar (1:1 ratio) - Similar acidity and tang"
       ],
       "Milk": [
         "Plant-Based Milk Alternatives:",
@@ -2945,22 +2940,22 @@
         "Sauce alternatives:",
         "- Coconut aminos - 1:1 replacement for soy sauce"
       ],
-      "Sugar": [
-        "Natural liquid sweeteners:",
-        "- Honey - Rich flavor, natural antibacterial properties",
-        "- Maple syrup - Complex flavor, rich in minerals",
-        "- Agave nectar - Mild flavor, dissolves easily",
-        "- Date syrup - Caramel-like flavor, mineral-rich",
-        "",
-        "Sugar-free alternatives:",
-        "- Stevia - Zero-calorie natural sweetener",
-        "- Monk fruit sweetener - Zero-calorie, no aftertaste",
-        "",
-        "Unrefined alternatives:",
-        "- Coconut sugar - Lower glycemic index, caramel flavor",
-        "",
-        "Note: When substituting liquid sweeteners for granulated sugar, reduce other liquid in recipe by ¼ cup for each cup of liquid sweetener used"
-      ],
+      "Sugar": {
+        directForms: [
+          "Sugar", "White sugar", "Brown sugar", "Raw sugar", "Cane sugar",
+          "Beet sugar", "Powdered sugar", "Confectioners sugar", "Granulated sugar",
+          "Superfine sugar", "Turbinado sugar", "Demerara sugar", "Muscovado sugar",
+          "Sucrose", "Fructose", "Glucose", "Dextrose", "Maltose",
+          "High fructose corn syrup", "Corn syrup", "Maple syrup", "Agave syrup",
+          "Simple syrup", "Invert sugar", "Caramel", "Molasses"
+        ],
+        mayContain: [
+          "Baked goods", "Desserts", "Candy", "Chocolate", "Ice cream",
+          "Beverages", "Soda", "Juice", "Energy drinks", "Sports drinks",
+          "Processed foods", "Processed meats", "Sauces", "Condiments", "Marinades",
+          "Breakfast cereals", "Granola bars", "Protein bars"
+        ]
+      },
       "Wheat": [
         "Single Ingredient Wheat Flour Substitutes:",
         "- Buckwheat Flour - Rich, earthy flavor, best for quick breads",
@@ -3152,7 +3147,7 @@
         mayContain: [
           "Baked goods", "Desserts", "Candy", "Chocolate", "Ice cream",
           "Beverages", "Soda", "Juice", "Energy drinks", "Sports drinks",
-          "Processed foods", "Sauces", "Condiments", "Marinades",
+          "Processed foods", "Processed meats", "Sauces", "Condiments", "Marinades",
           "Breakfast cereals", "Granola bars", "Protein bars"
         ]
       },
@@ -3334,7 +3329,6 @@
         ]
       }
     };
-
     // Update the checkIngredientForTriggers function to be more thorough
     function checkIngredientForTriggers(ingredient, selectedTriggerFoods) {
       const ingredientLower = ingredient.toLowerCase();
@@ -3473,9 +3467,12 @@
           ],
           'corn': [
             'high fructose corn syrup', 'corn starch', 'corn syrup'
+          ],
+          'sugar': [
+            'sauce', 'dressing', 'marinade', 'syrup', 'sweetener',
+            'baked goods', 'candy', 'chocolate', 'dessert',
+            'beverage', 'preservative', 'flavoring', 'ketchup', 'processed meats'
           ]
-          // Note: Removed overly broad categories for black tea, orange, etc. 
-          // as they were causing false positives
         };
 
         const potentialMatches = conservativeMayContain[trigger] || [];
@@ -4110,7 +4107,6 @@
     }
   ]
 };
-        
         // Load external JSON files in addition to embedded data
         let externalRecipes = [];
         try {
@@ -4188,6 +4184,36 @@
             inputs[index + 1].focus();
           }
         });
+
+        // Handle paste event for copy-paste functionality
+        input.addEventListener('paste', function(e) {
+          e.preventDefault();
+          const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+          const cleanedText = pastedText.toUpperCase().replace(/\W/g, ''); // Remove non-alphanumeric characters
+          
+          // Fill the input fields with the pasted characters
+          for (let i = 0; i < inputs.length; i++) {
+            if (i < cleanedText.length) {
+              inputs[i].value = cleanedText[i];
+            } else {
+              inputs[i].value = '';
+            }
+          }
+          
+          // Focus the next empty field or the last field if all are filled
+          if (cleanedText.length < inputs.length) {
+            inputs[cleanedText.length].focus();
+          } else {
+            inputs[inputs.length - 1].focus();
+          }
+        });
+
+        // Handle backspace to move to previous field
+        input.addEventListener('keydown', function(e) {
+          if (e.key === 'Backspace' && !this.value && index > 0) {
+            inputs[index - 1].focus();
+          }
+        });
       });
       
       verifyBtn.onclick = async function() {
@@ -4238,12 +4264,12 @@
         }
       };
 
-      // Initialize the Find Replacement Meals button
+      // Initialize the Suggest Meals button
       const fetchButton = document.getElementById('fetchRecipesBtn');
       if (fetchButton) {
-        console.log('Initializing Find Replacement Meals button');
+        console.log('Initializing Suggest Meals button');
         fetchButton.addEventListener('click', async function() {
-          console.log('Find Replacement Meals button clicked');
+          console.log('Suggest Meals button clicked');
           const spinner = this.querySelector('.loading-spinner');
           spinner.style.display = 'inline-block';
           
@@ -4261,7 +4287,7 @@
           }
         });
       } else {
-        console.error('Find Replacement Meals button not found');
+        console.error('Suggest Meals button not found');
       }
     });
 
@@ -4334,6 +4360,25 @@
           }
         });
       });
+
+      // Also add click handlers to the entire preference option containers
+      const preferenceOptions = dietaryPreferences.querySelectorAll('.preference-option');
+      preferenceOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          const radio = this.querySelector('input[name="diet-preference"]');
+          if (radio && !radio.checked) {
+            radio.checked = true;
+            radio.dispatchEvent(new Event('change'));
+          }
+        });
+      });
+
+      // Initialize the selected state for the default checked option
+      const checkedOption = dietaryPreferences.querySelector('input[name="diet-preference"]:checked');
+      if (checkedOption) {
+        checkedOption.closest('.preference-option').classList.add('selected');
+        selectedDietaryPreference = checkedOption.value;
+      }
 
       // Initialize meal type options (commented out since meal type section was removed)
       /*
@@ -4780,7 +4825,6 @@
         spinner.style.display = 'none';
       }
     }
-
     // Show detailed recipe information
     function showRecipeDetails(recipeId) {
       const recipe = recipes.find(r => r.id === recipeId);
@@ -5477,7 +5521,7 @@
           'sugar': [
             'sauce', 'dressing', 'marinade', 'syrup', 'sweetener',
             'baked goods', 'candy', 'chocolate', 'dessert',
-            'beverage', 'preservative', 'flavoring', 'ketchup'
+            'beverage', 'preservative', 'flavoring', 'ketchup', 'processed meats'
           ],
           'soybean': [
             'sauce', 'dressing', 'marinade', 'protein powder',
@@ -5566,7 +5610,10 @@
         "Cookies in a Bowl": "Cookies in a Bowl (with Ice Cream)",
         "Parmesan Chicken Linguini": "Parmesan Chicken Linguini with Sunday Gravy",
         "Chef's Salad": "Chef's Salad with Buttermilk Ranch Dressing",
-        "Healthy Tuna Bowl": "Healthy Tuna Grain Bowl with Turmeric Sweet Potatoes and Spicy Yogurt Dressing"
+        "Healthy Tuna Bowl": "Healthy Tuna Grain Bowl with Turmeric Sweet Potatoes and Spicy Yogurt Dressing",
+        "Spaghetti and No-Meat Balls": "Spaghetti and No-Meat Balls",
+        "Braised Short Rib": "Braised Short Ribs",
+        "Full Irish Breakfast": "Full Irish Breakfast"
       };
 
       // Check if this recipe has a special case mapping
@@ -5576,7 +5623,6 @@
       // Preserve existing hyphens while handling spaces and special characters
       return mappedName.replace(/[/\\?%*:|"<>]/g, '-');
     }
-
     // Function to clean text formatting artifacts
     function cleanText(text) {
       if (!text || typeof text !== 'string') return text;
@@ -6011,7 +6057,6 @@
       
       return pdf;
     }
-
     // Function to add meal content to PDF
     async function addMealToPDF(pdf, recipe, includeImages = true) {
       const pageWidth = pdf.internal.pageSize.getWidth();
@@ -6561,7 +6606,6 @@
   <!-- Add jsPDF and html2canvas CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
   <!-- Initialize Ingredient Checker and Hidden Trigger Detector -->
   <script>
     // Initialize the right panel tools
