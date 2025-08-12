@@ -6126,75 +6126,64 @@
       // Add meal image if requested
       if (includeImages) {
         try {
-          const imageData = await loadRecipeImage(recipeName);
-          if (imageData) {
-            // Image with brand-colored border
-            const imageWidth = contentWidth;
-            const imageHeight = 200;
-            
-            // Brand-colored border
-            pdf.setDrawColor(...brandColors.primary);
-            pdf.setLineWidth(3);
-            pdf.rect(margin, yPosition, imageWidth, imageHeight, 'S');
-            
-            // Calculate proper image dimensions to crop from center and fit edge-to-edge
-            const img = new Image();
-            img.src = imageData;
-            
-            await new Promise((resolve) => {
-              img.onload = resolve;
-              img.onerror = resolve;
-            });
-            
-            const imgWidth = img.width || 400;
-            const imgHeight = img.height || 300;
+          const imageResult = await loadRecipeImage(recipeName);
+          if (imageResult && imageResult.dataURL) {
+            // Use the original dimensions from the loaded image
+            const imgWidth = imageResult.width;
+            const imgHeight = imageResult.height;
             const imgAspectRatio = imgWidth / imgHeight;
             
-            // Calculate the container aspect ratio (inside the border)
-            const containerWidth = imageWidth - 6; // Account for 3px border on each side
-            const containerHeight = imageHeight - 6; // Account for 3px border on each side
-            const containerAspectRatio = containerWidth / containerHeight;
+            // Calculate optimal image dimensions while maintaining aspect ratio
+            const maxImageWidth = contentWidth;
+            const maxImageHeight = 250; // Slightly increased for better visibility
             
-            let cropWidth, cropHeight, cropX, cropY;
-            let displayWidth = containerWidth;
-            let displayHeight = containerHeight;
+            let displayWidth, displayHeight;
             
-            if (imgAspectRatio > containerAspectRatio) {
-              // Image is wider than container - crop from sides
-              cropHeight = imgHeight;
-              cropWidth = imgHeight * containerAspectRatio;
-              cropX = (imgWidth - cropWidth) / 2; // Center horizontally
-              cropY = 0;
+            if (imgAspectRatio > maxImageWidth / maxImageHeight) {
+              // Image is wider - fit to width
+              displayWidth = maxImageWidth;
+              displayHeight = maxImageWidth / imgAspectRatio;
             } else {
-              // Image is taller than container - crop from top/bottom
-              cropWidth = imgWidth;
-              cropHeight = imgWidth / containerAspectRatio;
-              cropX = 0;
-              cropY = (imgHeight - cropHeight) / 2; // Center vertically
+              // Image is taller - fit to height
+              displayHeight = maxImageHeight;
+              displayWidth = maxImageHeight * imgAspectRatio;
             }
             
-            // Position the image to fill the container edge-to-edge (inside border)
-            const imageX = margin + 3; // Account for border
-            const imageY = yPosition + 3; // Account for border
+            // Ensure minimum dimensions for visibility
+            if (displayHeight < 100) {
+              displayHeight = 100;
+              displayWidth = 100 * imgAspectRatio;
+            }
             
-            // Add the cropped image that fills edge-to-edge
+            // Center the image horizontally
+            const imageX = margin + (contentWidth - displayWidth) / 2;
+            const imageY = yPosition;
+            
+            // Add brand-colored border around the image
+            const borderPadding = 6;
+            const borderWidth = displayWidth + (borderPadding * 2);
+            const borderHeight = displayHeight + (borderPadding * 2);
+            const borderX = imageX - borderPadding;
+            const borderY = imageY - borderPadding;
+            
+            // Draw border
+            pdf.setDrawColor(...brandColors.primary);
+            pdf.setLineWidth(3);
+            pdf.rect(borderX, borderY, borderWidth, borderHeight, 'S');
+            
+            // Add the image with proper aspect ratio
             pdf.addImage(
-              imageData, 
+              imageResult.dataURL, 
               'JPEG', 
               imageX, 
               imageY, 
               displayWidth, 
               displayHeight, 
               undefined, 
-              'MEDIUM',
-              0, // rotation
-              cropX, 
-              cropY, 
-              cropWidth, 
-              cropHeight
+              'MEDIUM'
             );
             
-            yPosition += imageHeight + 25;
+            yPosition += borderHeight + 25;
           }
         } catch (error) {
           console.log('Could not load image for', recipeName);
@@ -6583,15 +6572,25 @@
         
         img.onload = function() {
           try {
+            // Store original dimensions before canvas conversion
+            const originalWidth = img.naturalWidth || img.width;
+            const originalHeight = img.naturalHeight || img.height;
+            
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             
-            canvas.width = img.width;
-            canvas.height = img.height;
+            canvas.width = originalWidth;
+            canvas.height = originalHeight;
             
             ctx.drawImage(img, 0, 0);
             const dataURL = canvas.toDataURL('image/jpeg', 0.8);
-            resolve(dataURL);
+            
+            // Return both image data and original dimensions
+            resolve({
+              dataURL: dataURL,
+              width: originalWidth,
+              height: originalHeight
+            });
           } catch (error) {
             console.error('Error converting image to base64:', error);
             resolve(null);

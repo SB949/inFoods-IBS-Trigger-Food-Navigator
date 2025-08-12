@@ -1,0 +1,3 @@
+[33m036da79[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m Mobile optimization: Enhanced responsive design, touch-friendly UI, and performance improvements
+[33me624877[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fix: Load recipes from both JSON files instead of embedded data
+[33m20c5fcf[m Fix: Ensure Find Replacement Meals always displays 3 meal cards
