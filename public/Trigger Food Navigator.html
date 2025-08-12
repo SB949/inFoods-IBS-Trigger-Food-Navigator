@@ -2317,7 +2317,7 @@
       display: list-item !important;
     }
 
-    /* Ingredient Checker Styles */
+    /* Enhanced Ingredient Checker Styles */
     #ingredientChecker {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
@@ -2330,10 +2330,11 @@
     }
 
     .ingredient-result {
-      padding: 10px;
+      padding: 15px;
       margin: 10px 0;
-      border-radius: 6px;
+      border-radius: 8px;
       border-left: 4px solid;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     .ingredient-result.safe {
@@ -2355,13 +2356,104 @@
     }
 
     .ingredient-result h4 {
-      margin: 0 0 5px 0;
-      font-size: 0.9em;
+      margin: 0 0 8px 0;
+      font-size: 1em;
+      font-weight: 600;
     }
 
     .ingredient-result p {
-      margin: 0;
+      margin: 0 0 5px 0;
+      font-size: 0.85em;
+      line-height: 1.4;
+    }
+
+    .ingredient-info-section {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      padding: 10px;
+      margin: 8px 0;
+      border-left: 3px solid var(--accent);
+    }
+
+    .ingredient-info-section h5 {
+      margin: 0 0 5px 0;
+      font-size: 0.85em;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .ingredient-info-section p {
+      margin: 0 0 3px 0;
       font-size: 0.8em;
+    }
+
+    .ingredient-info-section ul {
+      margin: 5px 0;
+      padding-left: 15px;
+    }
+
+    .ingredient-info-section li {
+      font-size: 0.8em;
+      margin: 2px 0;
+      line-height: 1.3;
+    }
+
+    .ingredient-info-section.warning {
+      border-left-color: #ffbb33;
+      background: rgba(255, 187, 51, 0.05);
+    }
+
+    .risk-high {
+      color: #ff4444;
+      font-weight: 600;
+    }
+
+    .risk-medium {
+      color: #ffbb33;
+      font-weight: 600;
+    }
+
+    .risk-low {
+      color: #a3c962;
+      font-weight: 600;
+    }
+
+    /* Enhanced input styling */
+    #ingredientInput {
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 0.9em;
+      transition: border-color 0.3s ease;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    #ingredientInput:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(68, 137, 201, 0.1);
+    }
+
+    /* Loading animation for ingredient analysis */
+    .ingredient-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: var(--text);
+      font-style: italic;
+    }
+
+    .ingredient-loading::before {
+      content: '';
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border-color);
+      border-top: 2px solid var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
     }
 
     /* Hidden Trigger Detector Styles */
@@ -6665,21 +6757,27 @@
       initializeHiddenTriggerDetector();
     });
 
-    // Ingredient Checker functionality
+    // Enhanced Ingredient Checker functionality
     function initializeIngredientChecker() {
       const ingredientInput = document.getElementById('ingredientInput');
       const ingredientResults = document.getElementById('ingredientResults');
       
-      // Real-time analysis as user types
+      // Real-time analysis as user types with debouncing
+      let analysisTimeout;
       ingredientInput.addEventListener('input', function() {
         const ingredient = this.value.trim();
+        clearTimeout(analysisTimeout);
+        
         if (ingredient.length > 2) {
-          analyzeIngredient(ingredient);
+          analysisTimeout = setTimeout(() => {
+            analyzeIngredient(ingredient);
+          }, 300); // Debounce for better performance
         } else {
           ingredientResults.innerHTML = '';
         }
       });
       
+      // Enhanced ingredient analysis with smart features
       function analyzeIngredient(ingredient) {
         const selectedTriggerFoods = Array.from(document.querySelectorAll('.food-item.selected'))
           .map(el => el.querySelector('.food-toggle-btn').textContent.trim());
@@ -6694,47 +6792,171 @@
           return;
         }
         
-        // Use only the checkIngredientWarnings function for comprehensive analysis
-        const warnings = checkIngredientWarnings(ingredient, selectedTriggerFoods);
+        // Enhanced analysis with multiple data sources
+        const analysis = performEnhancedIngredientAnalysis(ingredient, selectedTriggerFoods);
         
-        // Separate Contains and May Contain warnings
-        const containsWarnings = warnings.filter(w => w.type === 'contains');
-        const mayContainWarnings = warnings.filter(w => w.type === 'mayContain');
-        
-        // Extract unique trigger foods (using Set to avoid duplicates)
-        const containsTriggers = [...new Set(containsWarnings.map(w => w.triggerFood))];
-        const mayContainTriggers = [...new Set(mayContainWarnings.map(w => w.triggerFood))];
-        
-        let resultHtml = '';
-        
-        if (containsTriggers.length > 0) {
-          resultHtml = `
-            <div class="ingredient-result danger">
-              <h4>🚫 Contains Trigger Foods</h4>
-              <p><strong>Direct matches:</strong> ${containsTriggers.join(', ')}</p>
-              <p><strong>Recommendation:</strong> Avoid this ingredient completely.</p>
-            </div>
-          `;
-        } else if (mayContainTriggers.length > 0) {
-          resultHtml = `
-            <div class="ingredient-result warning">
-              <h4>⚠️ May Contain Trigger Foods</h4>
-              <p><strong>Potential triggers:</strong> ${mayContainTriggers.join(', ')}</p>
-              <p><strong>Recommendation:</strong> Check product labels carefully or choose alternatives.</p>
-            </div>
-          `;
-        } else {
-          resultHtml = `
-            <div class="ingredient-result safe">
-              <h4>✅ Appears Safe</h4>
-              <p>This ingredient doesn't appear to contain your selected trigger foods.</p>
-              <p><strong>Note:</strong> Always check product labels for complete ingredient lists.</p>
-            </div>
-          `;
-        }
-        
+        // Generate comprehensive result
+        const resultHtml = generateEnhancedResult(analysis, ingredient, selectedTriggerFoods);
         ingredientResults.innerHTML = resultHtml;
       }
+    }
+
+    // Enhanced ingredient analysis function
+    function performEnhancedIngredientAnalysis(ingredient, selectedTriggerFoods) {
+      const analysis = {
+        warnings: [],
+        synonyms: [],
+        alternatives: [],
+        riskLevel: 'low',
+        context: {},
+        processingInfo: {},
+        crossContamination: false,
+        brandRecommendations: [],
+        cookingTips: []
+      };
+
+      // 1. Basic trigger food analysis
+      const basicWarnings = checkIngredientWarnings(ingredient, selectedTriggerFoods);
+      analysis.warnings = basicWarnings;
+
+      // 2. Enhanced synonym recognition
+      analysis.synonyms = findIngredientSynonyms(ingredient);
+
+      // 3. Scientific name recognition
+      const scientificMatches = checkScientificNames(ingredient, selectedTriggerFoods);
+      analysis.warnings = [...analysis.warnings, ...scientificMatches];
+
+      // 4. Brand name analysis
+      const brandAnalysis = analyzeBrandNames(ingredient, selectedTriggerFoods);
+      analysis.warnings = [...analysis.warnings, ...brandAnalysis.warnings];
+      analysis.brandRecommendations = brandAnalysis.recommendations;
+
+      // 5. Processing level analysis
+      analysis.processingInfo = analyzeProcessingLevel(ingredient);
+
+      // 6. Cross-contamination assessment
+      analysis.crossContamination = assessCrossContamination(ingredient, selectedTriggerFoods);
+
+      // 7. Alternative suggestions
+      analysis.alternatives = generateAlternatives(ingredient, selectedTriggerFoods);
+
+      // 8. Cooking tips
+      analysis.cookingTips = generateCookingTips(ingredient, selectedTriggerFoods);
+
+      // 9. Risk level assessment
+      analysis.riskLevel = calculateRiskLevel(analysis);
+
+      // 10. Context analysis
+      analysis.context = analyzeContext(ingredient, selectedTriggerFoods);
+
+      return analysis;
+    }
+
+    // Enhanced result generation
+    function generateEnhancedResult(analysis, ingredient, selectedTriggerFoods) {
+      const { warnings, synonyms, alternatives, riskLevel, context, processingInfo, 
+              crossContamination, brandRecommendations, cookingTips } = analysis;
+      
+      const containsWarnings = warnings.filter(w => w.type === 'contains');
+      const mayContainWarnings = warnings.filter(w => w.type === 'mayContain');
+      const containsTriggers = [...new Set(containsWarnings.map(w => w.triggerFood))];
+      const mayContainTriggers = [...new Set(mayContainWarnings.map(w => w.triggerFood))];
+
+      let resultHtml = '';
+
+      // Main analysis result
+      if (containsTriggers.length > 0) {
+        resultHtml = `
+          <div class="ingredient-result danger">
+            <h4>🚫 Contains Trigger Foods</h4>
+            <p><strong>Direct matches:</strong> ${containsTriggers.join(', ')}</p>
+            <p><strong>Risk Level:</strong> <span class="risk-high">High Risk</span></p>
+            <p><strong>Recommendation:</strong> Avoid this ingredient completely.</p>
+          </div>
+        `;
+      } else if (mayContainTriggers.length > 0) {
+        resultHtml = `
+          <div class="ingredient-result warning">
+            <h4>⚠️ May Contain Trigger Foods</h4>
+            <p><strong>Potential triggers:</strong> ${mayContainTriggers.join(', ')}</p>
+            <p><strong>Risk Level:</strong> <span class="risk-medium">Medium Risk</span></p>
+            <p><strong>Recommendation:</strong> Check product labels carefully or choose alternatives.</p>
+          </div>
+        `;
+      } else {
+        resultHtml = `
+          <div class="ingredient-result safe">
+            <h4>✅ Appears Safe</h4>
+            <p>This ingredient doesn't appear to contain your selected trigger foods.</p>
+            <p><strong>Risk Level:</strong> <span class="risk-low">Low Risk</span></p>
+            <p><strong>Note:</strong> Always check product labels for complete ingredient lists.</p>
+          </div>
+        `;
+      }
+
+      // Add enhanced information sections
+      if (synonyms.length > 0) {
+        resultHtml += `
+          <div class="ingredient-info-section">
+            <h5>🔍 Related Terms:</h5>
+            <p>${synonyms.join(', ')}</p>
+          </div>
+        `;
+      }
+
+      if (alternatives.length > 0) {
+        resultHtml += `
+          <div class="ingredient-info-section">
+            <h5>🔄 Safe Alternatives:</h5>
+            <ul>
+              ${alternatives.map(alt => `<li>${alt}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      }
+
+      if (brandRecommendations.length > 0) {
+        resultHtml += `
+          <div class="ingredient-info-section">
+            <h5>🏷️ Recommended Brands:</h5>
+            <ul>
+              ${brandRecommendations.map(brand => `<li>${brand}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      }
+
+      if (cookingTips.length > 0) {
+        resultHtml += `
+          <div class="ingredient-info-section">
+            <h5>👨‍🍳 Cooking Tips:</h5>
+            <ul>
+              ${cookingTips.map(tip => `<li>${tip}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      }
+
+      if (crossContamination) {
+        resultHtml += `
+          <div class="ingredient-info-section warning">
+            <h5>⚠️ Cross-Contamination Risk:</h5>
+            <p>This ingredient may be processed in facilities that handle your trigger foods.</p>
+          </div>
+        `;
+      }
+
+      if (processingInfo.level) {
+        resultHtml += `
+          <div class="ingredient-info-section">
+            <h5>🏭 Processing Information:</h5>
+            <p><strong>Level:</strong> ${processingInfo.level}</p>
+            ${processingInfo.details ? `<p><strong>Details:</strong> ${processingInfo.details}</p>` : ''}
+          </div>
+        `;
+      }
+
+      return resultHtml;
     }
 
     // Hidden Trigger Detector functionality
@@ -6797,6 +7019,298 @@
       
       content.classList.toggle('expanded');
       icon.classList.toggle('rotated');
+    }
+
+    // Enhanced Ingredient Analysis Functions
+
+    // 1. Synonym recognition
+    function findIngredientSynonyms(ingredient) {
+      const ingredientLower = ingredient.toLowerCase();
+      const synonymDatabase = {
+        'tomato': ['tomatoes', 'tomato paste', 'tomato sauce', 'tomato puree', 'tomato juice'],
+        'onion': ['onions', 'yellow onion', 'white onion', 'red onion', 'shallot', 'shallots'],
+        'garlic': ['garlic cloves', 'garlic powder', 'garlic salt', 'minced garlic'],
+        'olive oil': ['extra virgin olive oil', 'evoo', 'olive oil'],
+        'salt': ['sea salt', 'kosher salt', 'table salt', 'iodized salt'],
+        'pepper': ['black pepper', 'white pepper', 'ground pepper', 'peppercorns'],
+        'flour': ['all-purpose flour', 'bread flour', 'cake flour', 'pastry flour'],
+        'sugar': ['white sugar', 'brown sugar', 'granulated sugar', 'powdered sugar'],
+        'butter': ['unsalted butter', 'salted butter', 'clarified butter', 'ghee'],
+        'egg': ['eggs', 'egg white', 'egg yolk', 'whole egg'],
+        'milk': ['whole milk', 'skim milk', '2% milk', '1% milk', 'almond milk', 'soy milk'],
+        'cheese': ['cheddar cheese', 'mozzarella cheese', 'parmesan cheese', 'cream cheese'],
+        'bread': ['white bread', 'whole wheat bread', 'sourdough bread', 'rye bread'],
+        'pasta': ['spaghetti', 'penne', 'linguine', 'fettuccine', 'rigatoni'],
+        'rice': ['white rice', 'brown rice', 'basmati rice', 'jasmine rice', 'wild rice'],
+        'chicken': ['chicken breast', 'chicken thigh', 'chicken leg', 'ground chicken'],
+        'beef': ['ground beef', 'beef steak', 'beef roast', 'beef tenderloin'],
+        'fish': ['salmon', 'tuna', 'cod', 'halibut', 'tilapia'],
+        'shrimp': ['prawns', 'shrimp', 'jumbo shrimp', 'medium shrimp'],
+        'vegetable': ['vegetables', 'veggies', 'produce', 'fresh vegetables']
+      };
+
+      const synonyms = [];
+      for (const [key, values] of Object.entries(synonymDatabase)) {
+        if (ingredientLower.includes(key) || values.some(syn => ingredientLower.includes(syn))) {
+          synonyms.push(...values.filter(syn => syn !== ingredientLower));
+        }
+      }
+
+      return [...new Set(synonyms)].slice(0, 5); // Limit to 5 synonyms
+    }
+
+    // 2. Scientific name recognition
+    function checkScientificNames(ingredient, selectedTriggerFoods) {
+      const ingredientLower = ingredient.toLowerCase();
+      const scientificNames = {
+        'Milk': ['lactose', 'casein', 'whey', 'lactalbumin', 'lactoglobulin', 'lactoferrin'],
+        'Egg': ['albumin', 'albumen', 'ovalbumin', 'ovoglobulin', 'lysozyme', 'avidin'],
+        'Wheat': ['gluten', 'gliadin', 'glutenin', 'triticum', 'secalin'],
+        'Soybean': ['soy', 'glycine max', 'soy lecithin', 'soy protein isolate'],
+        'Corn': ['zea mays', 'corn starch', 'corn syrup', 'high fructose corn syrup'],
+        'Sugar': ['sucrose', 'fructose', 'glucose', 'dextrose', 'maltose'],
+        'Yeast': ['saccharomyces cerevisiae', 'brewer\'s yeast', 'nutritional yeast'],
+        'Cocoa': ['theobroma cacao', 'cocoa butter', 'cocoa powder'],
+        'Black Tea': ['camellia sinensis', 'theaflavin', 'thearubigin'],
+        'Walnut': ['juglans regia', 'juglans nigra', 'walnut oil'],
+        'Pineapple': ['ananas comosus', 'bromelain', 'pineapple enzyme'],
+        'Rye': ['secale cereale', 'rye flour', 'rye bread'],
+        'Oat': ['avena sativa', 'oat beta-glucan', 'oat fiber'],
+        'Cabbage': ['brassica oleracea', 'brassica rapa', 'napa cabbage'],
+        'Lemon': ['citrus limon', 'citric acid', 'limonene'],
+        'Orange': ['citrus sinensis', 'citric acid', 'limonene'],
+        'Grapefruit': ['citrus paradisi', 'citric acid', 'limonene'],
+        'Honey': ['apiculture', 'honey bee', 'raw honey', 'manuka honey']
+      };
+
+      const warnings = [];
+      selectedTriggerFoods.forEach(triggerFood => {
+        const scientificTerms = scientificNames[triggerFood] || [];
+        const matches = scientificTerms.filter(term => ingredientLower.includes(term));
+        if (matches.length > 0) {
+          warnings.push({
+            triggerFood,
+            type: 'contains',
+            message: `Contains ${triggerFood} (scientific name: ${matches.join(', ')})`
+          });
+        }
+      });
+
+      return warnings;
+    }
+
+    // 3. Brand name analysis
+    function analyzeBrandNames(ingredient, selectedTriggerFoods) {
+      const ingredientLower = ingredient.toLowerCase();
+      const brandDatabase = {
+        'Milk': {
+          brands: ['kraft', 'land o lakes', 'cabot', 'tillamook', 'sargento'],
+          recommendations: ['Silk Almond Milk', 'Oatly Oat Milk', 'Ripple Pea Milk', 'Califia Farms Almond Milk']
+        },
+        'Wheat': {
+          brands: ['wonder bread', 'pepperidge farm', 'arnold', 'sara lee', 'nature\'s own'],
+          recommendations: ['Udi\'s Gluten-Free Bread', 'Canyon Bakehouse', 'Schar Gluten-Free', 'King Arthur Gluten-Free']
+        },
+        'Egg': {
+          brands: ['eggland\'s best', 'vital farms', 'pete and gerry\'s'],
+          recommendations: ['Just Egg', 'Follow Your Heart VeganEgg', 'Bob\'s Red Mill Egg Replacer']
+        },
+        'Soybean': {
+          brands: ['silk', 'edensoy', 'westsoy', 'so delicious'],
+          recommendations: ['Oatly Oat Milk', 'Ripple Pea Milk', 'Califia Farms Almond Milk', 'Malk Almond Milk']
+        },
+        'Sugar': {
+          brands: ['coca cola', 'pepsi', 'snickers', 'hershey', 'nestle'],
+          recommendations: ['Zevia', 'LaCroix', 'Spindrift', 'Hint Water', 'Bubly']
+        }
+      };
+
+      const warnings = [];
+      const recommendations = [];
+
+      selectedTriggerFoods.forEach(triggerFood => {
+        const brandInfo = brandDatabase[triggerFood];
+        if (brandInfo) {
+          const brandMatches = brandInfo.brands.filter(brand => ingredientLower.includes(brand));
+          if (brandMatches.length > 0) {
+            warnings.push({
+              triggerFood,
+              type: 'contains',
+              message: `Brand ${brandMatches.join(', ')} typically contains ${triggerFood}`
+            });
+          }
+          recommendations.push(...brandInfo.recommendations);
+        }
+      });
+
+      return {
+        warnings,
+        recommendations: [...new Set(recommendations)]
+      };
+    }
+
+    // 4. Processing level analysis
+    function analyzeProcessingLevel(ingredient) {
+      const ingredientLower = ingredient.toLowerCase();
+      
+      const processingLevels = {
+        'minimal': {
+          keywords: ['fresh', 'raw', 'organic', 'natural', 'whole', 'unprocessed'],
+          description: 'Minimally processed, close to natural state'
+        },
+        'moderate': {
+          keywords: ['cooked', 'steamed', 'roasted', 'grilled', 'baked', 'dried'],
+          description: 'Moderately processed through cooking or preservation'
+        },
+        'high': {
+          keywords: ['refined', 'processed', 'artificial', 'synthetic', 'hydrogenated', 'modified'],
+          description: 'Highly processed with artificial ingredients'
+        }
+      };
+
+      for (const [level, info] of Object.entries(processingLevels)) {
+        if (info.keywords.some(keyword => ingredientLower.includes(keyword))) {
+          return {
+            level: level.charAt(0).toUpperCase() + level.slice(1),
+            details: info.description
+          };
+        }
+      }
+
+      return { level: 'Unknown', details: 'Processing level not determined' };
+    }
+
+    // 5. Cross-contamination assessment
+    function assessCrossContamination(ingredient, selectedTriggerFoods) {
+      const ingredientLower = ingredient.toLowerCase();
+      const crossContaminationKeywords = [
+        'may contain', 'processed in facility', 'shared equipment', 'cross contact',
+        'manufactured in facility', 'produced in facility', 'packaged in facility'
+      ];
+
+      return crossContaminationKeywords.some(keyword => ingredientLower.includes(keyword));
+    }
+
+    // 6. Alternative suggestions
+    function generateAlternatives(ingredient, selectedTriggerFoods) {
+      const ingredientLower = ingredient.toLowerCase();
+      const alternatives = [];
+
+      // Check if ingredient contains any trigger foods
+      const warnings = checkIngredientWarnings(ingredient, selectedTriggerFoods);
+      const containsTriggers = warnings.filter(w => w.type === 'contains').map(w => w.triggerFood);
+
+      if (containsTriggers.length > 0) {
+        containsTriggers.forEach(triggerFood => {
+          const triggerAlternatives = replacementMapping[triggerFood];
+          if (triggerAlternatives) {
+            if (Array.isArray(triggerAlternatives)) {
+              alternatives.push(...triggerAlternatives.slice(0, 3));
+            } else if (triggerAlternatives.directForms) {
+              alternatives.push(...triggerAlternatives.directForms.slice(0, 3));
+            }
+          }
+        });
+      }
+
+      return [...new Set(alternatives)].slice(0, 5);
+    }
+
+    // 7. Cooking tips
+    function generateCookingTips(ingredient, selectedTriggerFoods) {
+      const ingredientLower = ingredient.toLowerCase();
+      const tips = [];
+
+      const cookingTipsDatabase = {
+        'Milk': [
+          'Use almond milk or oat milk as a 1:1 replacement',
+          'Coconut milk works well in creamy sauces',
+          'Cashew milk is great for baking'
+        ],
+        'Wheat': [
+          'Use gluten-free flour blends for baking',
+          'Rice flour works well for thickening sauces',
+          'Quinoa flour adds protein to baked goods'
+        ],
+        'Egg': [
+          'Use flaxseed meal (1 tbsp + 3 tbsp water) as egg replacer',
+          'Applesauce works well in sweet baked goods',
+          'Banana puree adds moisture and binding'
+        ],
+        'Sugar': [
+          'Use stevia or monk fruit for zero-calorie sweetness',
+          'Maple syrup works well in most recipes',
+          'Honey adds natural sweetness and moisture'
+        ]
+      };
+
+      selectedTriggerFoods.forEach(triggerFood => {
+        const triggerTips = cookingTipsDatabase[triggerFood];
+        if (triggerTips) {
+          tips.push(...triggerTips);
+        }
+      });
+
+      return [...new Set(tips)].slice(0, 3);
+    }
+
+    // 8. Risk level calculation
+    function calculateRiskLevel(analysis) {
+      const { warnings, crossContamination, processingInfo } = analysis;
+      
+      const containsWarnings = warnings.filter(w => w.type === 'contains');
+      const mayContainWarnings = warnings.filter(w => w.type === 'mayContain');
+
+      if (containsWarnings.length > 0) {
+        return 'high';
+      } else if (mayContainWarnings.length > 0 || crossContamination) {
+        return 'medium';
+      } else {
+        return 'low';
+      }
+    }
+
+    // 9. Context analysis
+    function analyzeContext(ingredient, selectedTriggerFoods) {
+      const ingredientLower = ingredient.toLowerCase();
+      const context = {
+        cuisine: 'unknown',
+        mealType: 'unknown',
+        preparation: 'unknown'
+      };
+
+      // Cuisine detection
+      const cuisines = {
+        'italian': ['pasta', 'pizza', 'risotto', 'bruschetta', 'tiramisu'],
+        'mexican': ['taco', 'burrito', 'enchilada', 'guacamole', 'salsa'],
+        'asian': ['soy sauce', 'ginger', 'sesame', 'miso', 'wasabi'],
+        'mediterranean': ['olive oil', 'feta', 'hummus', 'falafel', 'tabbouleh'],
+        'indian': ['curry', 'masala', 'naan', 'dal', 'chutney']
+      };
+
+      for (const [cuisine, keywords] of Object.entries(cuisines)) {
+        if (keywords.some(keyword => ingredientLower.includes(keyword))) {
+          context.cuisine = cuisine;
+          break;
+        }
+      }
+
+      // Meal type detection
+      const mealTypes = {
+        'breakfast': ['cereal', 'pancake', 'waffle', 'oatmeal', 'yogurt'],
+        'lunch': ['sandwich', 'salad', 'soup', 'wrap', 'burger'],
+        'dinner': ['steak', 'chicken', 'fish', 'pasta', 'rice'],
+        'dessert': ['cake', 'cookie', 'ice cream', 'pie', 'chocolate']
+      };
+
+      for (const [mealType, keywords] of Object.entries(mealTypes)) {
+        if (keywords.some(keyword => ingredientLower.includes(keyword))) {
+          context.mealType = mealType;
+          break;
+        }
+      }
+
+      return context;
     }
 
     // Get hidden trigger sources for selected trigger foods
