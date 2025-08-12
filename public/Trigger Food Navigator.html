@@ -176,6 +176,7 @@
       background-color: var(--btn-color);
       border-radius: 30px;
       position: relative;
+      box-sizing: border-box;
     }
 
     .form .info {
@@ -1460,6 +1461,35 @@
         font-size: 0.9em;
         line-height: 1.5;
       }
+      
+      /* Extra small mobile verification form */
+      .verification-overlay .form {
+        padding: 15px 10px;
+        border-radius: 15px;
+      }
+      
+      .verification-overlay .form .title {
+        font-size: 1.2em;
+      }
+      
+      .verification-overlay .form .description {
+        font-size: 0.85em;
+      }
+      
+      .verification-overlay .input-fields {
+        gap: 4px;
+        max-width: 240px;
+      }
+      
+      .verification-overlay .input-fields input {
+        width: 2em;
+        height: 2em;
+        font-size: 1rem;
+      }
+      
+      .verification-overlay .auth-logo {
+        width: 120px;
+      }
     }
     
     /* Mobile Styles (321px to 480px) */
@@ -1479,6 +1509,7 @@
         line-height: 1.5;
       }
     }
+
     /* Small Mobile (up to 480px) */
     @media (max-width: 480px) {
       
@@ -1509,27 +1540,40 @@
         height: 18px;
       }
       
-      /* Make verification form mobile-friendly */
-      .form {
-        margin: 10px;
-        padding: 20px;
-        max-width: calc(100vw - 20px);
-      }
-      
-      .input-fields {
-        gap: 4px;
-      }
-      
-      .input-fields input {
-        width: 2em;
-        height: 2em;
-        font-size: 1.2rem;
-      }
+          /* Make verification form mobile-friendly */
+    .form {
+      margin: 10px;
+      padding: 20px;
+      max-width: calc(100vw - 20px);
+      width: calc(100vw - 20px);
+      box-sizing: border-box;
+    }
+    
+    .input-fields {
+      gap: 4px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: nowrap;
+      width: 100%;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+    
+    .input-fields input {
+      width: 2.5em;
+      height: 2.5em;
+      font-size: 1.2rem;
+      flex: 1;
+      min-width: 0;
+      max-width: 2.5em;
+    }
       
       /* Main wrapper - stack everything vertically */
       .main-wrapper {
         flex-direction: column;
+        height: auto;
         gap: 15px;
+        padding: 10px;
       }
       
       #savedMealsPanel, #rightToolsPanel {
@@ -1539,15 +1583,23 @@
         border: none;
         border-bottom: 1px solid var(--accent);
         padding: 15px 10px;
+        order: 2; /* Move saved meals to bottom on mobile */
       }
       
       #mainContentInner {
         padding: 0 10px;
+        order: 1; /* Main content first on mobile */
+      }
+      
+      #rightToolsPanel {
+        order: 3; /* Tools panel last on mobile */
+        border-top: 1px solid var(--accent);
+        border-bottom: none;
       }
       
       /* Food selection grid - smaller items on mobile */
       .food-selection {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
         gap: 8px;
         padding: 10px 5px;
       }
@@ -1556,11 +1608,18 @@
         padding: 8px;
         font-size: 0.8em;
         min-height: 80px;
+        min-width: 80px;
       }
       
       .food-item img {
         width: 30px;
         height: 30px;
+      }
+      
+      .food-toggle-btn {
+        font-size: 0.75em;
+        padding: 6px 8px;
+        min-height: 40px;
       }
       
       /* Preference selection - stack vertically */
@@ -1574,6 +1633,7 @@
         padding: 12px 15px;
         width: 100%;
         justify-content: center;
+        min-height: 50px;
       }
       
       /* Button group */
@@ -1584,9 +1644,10 @@
       }
       
       .button-group button {
-        padding: 12px 20px;
+        padding: 15px 20px;
         font-size: 1em;
         width: 100%;
+        min-height: 50px;
       }
       
       /* Meal cards - full width on small mobile */
@@ -1639,6 +1700,73 @@
       #ingredientInput {
         font-size: 16px; /* Prevents zoom on iOS */
         padding: 12px;
+        min-height: 44px;
+      }
+      
+      /* Meal type filter mobile optimization */
+      .meal-type-filter {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+      }
+      
+      .meal-type-filter select {
+        padding: 12px;
+        min-height: 44px;
+        font-size: 16px;
+      }
+      
+      /* Enhanced spacing for mobile */
+      section {
+        margin-bottom: 20px;
+      }
+      
+      section h2 {
+        margin-bottom: 15px;
+        font-size: 1.2em;
+      }
+      
+      /* Improve saved meals panel on mobile */
+      #savedMealsPanel h2 {
+        font-size: 1.1em;
+        margin-bottom: 10px;
+      }
+      
+      .saved-meal {
+        padding: 12px;
+        margin-bottom: 10px;
+      }
+      
+      .saved-meal h3 {
+        font-size: 1em;
+        margin-bottom: 8px;
+      }
+      
+      /* Improve right tools panel on mobile */
+      #rightToolsPanel h2 {
+        font-size: 1.1em;
+        margin-bottom: 10px;
+      }
+      
+      #ingredientChecker, #hiddenTriggerDetector {
+        padding: 12px;
+        margin-bottom: 15px;
+      }
+      
+      /* Better touch targets for trigger categories */
+      .trigger-category-header {
+        padding: 12px;
+        min-height: 44px;
+        font-size: 0.9em;
+      }
+      
+      .trigger-category-content {
+        padding: 12px;
+      }
+      
+      .hidden-food-item {
+        padding: 8px 0;
+        font-size: 0.85em;
       }
     }
 
@@ -1660,6 +1788,8 @@
       .main-wrapper {
         flex-direction: column;
         gap: 20px;
+        height: auto;
+        padding: 15px;
       }
 
       #savedMealsPanel {
@@ -1668,6 +1798,7 @@
         border-bottom: 2px solid var(--accent);
         max-height: 250px;
         overflow-y: auto;
+        order: 2;
       }
 
       #rightToolsPanel {
@@ -1676,6 +1807,11 @@
         border-top: 2px solid var(--accent);
         max-height: 350px;
         overflow-y: auto;
+        order: 3;
+      }
+      
+      #mainContentInner {
+        order: 1;
       }
 
       #replacementMeal {
@@ -1693,7 +1829,7 @@
       }
 
       .food-selection {
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         gap: 10px;
       }
 
@@ -1706,11 +1842,18 @@
       .preference-option {
         flex: 1;
         min-width: 200px;
+        min-height: 50px;
       }
       
       .button-group {
         flex-direction: row;
         justify-content: center;
+        flex-wrap: wrap;
+      }
+      
+      .button-group button {
+        min-height: 50px;
+        padding: 12px 20px;
       }
       
       #replacementDisplay {
@@ -1724,10 +1867,36 @@
         min-width: 280px;
         max-width: calc(50% - 10px);
       }
+      
+      /* Enhanced touch targets for tablet */
+      .food-item {
+        min-height: 90px;
+        min-width: 90px;
+      }
+      
+      .food-toggle-btn {
+        min-height: 44px;
+        font-size: 0.85em;
+      }
+      
+      /* Better modal handling for tablet */
+      .recipe-modal-content, .replacement-modal-content {
+        width: 90% !important;
+        max-width: 600px !important;
+        margin: 20px auto !important;
+      }
     }
     
     /* Small Desktop (769px to 1024px) */
     @media (min-width: 769px) and (max-width: 1024px) {
+      .main-wrapper {
+        gap: 15px;
+      }
+      
+      #savedMealsPanel, #rightToolsPanel {
+        width: 280px;
+      }
+      
       .meal-card {
         min-width: 280px;
         max-width: 350px;
@@ -1744,6 +1913,11 @@
         min-width: 250px;
         max-width: calc(33.333% - 15px);
       }
+      
+      .food-selection {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 12px;
+      }
     }
 
     /* Medium screens - stack panels vertically but keep cards horizontal */
@@ -1756,6 +1930,196 @@
       #replacementMeal {
         gap: 8px;
       }
+    }
+
+    /* Large Desktop (1025px and up) */
+    @media (min-width: 1025px) {
+      .main-wrapper {
+        gap: 20px;
+      }
+      
+      #savedMealsPanel, #rightToolsPanel {
+        width: 350px;
+      }
+      
+      .food-selection {
+        grid-template-columns: repeat(9, 1fr);
+        gap: 15px;
+      }
+      
+      .meal-card {
+        min-width: 450px;
+        max-width: 500px;
+      }
+    }
+
+    /* Landscape orientation adjustments for mobile */
+    @media (max-width: 768px) and (orientation: landscape) {
+      .main-wrapper {
+        flex-direction: row;
+        height: calc(100vh - 80px);
+      }
+      
+      #savedMealsPanel {
+        width: 25%;
+        max-height: none;
+        order: 1;
+      }
+      
+      #mainContentInner {
+        width: 50%;
+        order: 2;
+      }
+      
+      #rightToolsPanel {
+        width: 25%;
+        max-height: none;
+        order: 3;
+      }
+      
+      .food-selection {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      }
+      
+      .meal-card {
+        min-width: 200px !important;
+        max-width: 250px !important;
+      }
+    }
+
+    /* High DPI displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .food-item img {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+      }
+    }
+
+    /* Reduced motion for accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Dark mode adjustments for mobile */
+    @media (max-width: 768px) {
+      [data-theme="dark"] .food-item {
+        background: var(--card-bg);
+        border-color: var(--border-color);
+      }
+      
+      [data-theme="dark"] .meal-card {
+        background: var(--card-bg);
+        border-color: var(--border-color);
+      }
+      
+      [data-theme="dark"] .replacement-card {
+        background: var(--card-bg);
+        border-color: var(--border-color);
+      }
+    }
+
+    /* Mobile-specific enhancements */
+    .mobile-device {
+      /* Prevent horizontal scroll on mobile */
+      overflow-x: hidden;
+    }
+    
+    .mobile-device .main-wrapper {
+      /* Ensure proper stacking on mobile */
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Better touch feedback */
+    .mobile-device .food-item:active,
+    .mobile-device .preference-option:active,
+    .mobile-device .button-group button:active {
+      transform: scale(0.95);
+      transition: transform 0.1s ease;
+    }
+    
+    /* Improved scrollbars for mobile */
+    .mobile-device #savedMealsPanel::-webkit-scrollbar,
+    .mobile-device #rightToolsPanel::-webkit-scrollbar,
+    .mobile-device #replacementMeal::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .mobile-device #savedMealsPanel::-webkit-scrollbar-track,
+    .mobile-device #rightToolsPanel::-webkit-scrollbar-track,
+    .mobile-device #replacementMeal::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    .mobile-device #savedMealsPanel::-webkit-scrollbar-thumb,
+    .mobile-device #rightToolsPanel::-webkit-scrollbar-thumb,
+    .mobile-device #replacementMeal::-webkit-scrollbar-thumb {
+      background-color: var(--accent);
+      border-radius: 3px;
+    }
+    
+    /* Better focus states for accessibility */
+    .mobile-device .food-item:focus,
+    .mobile-device .preference-option:focus,
+    .mobile-device .button-group button:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    
+    /* Improved loading states for mobile */
+    .mobile-device .loading {
+      padding: 30px 20px;
+      font-size: 1.1em;
+    }
+    
+    /* Better spacing for mobile forms */
+    .mobile-device .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .mobile-device .form-group input,
+    .mobile-device .form-group textarea,
+    .mobile-device .form-group select {
+      padding: 15px;
+      font-size: 16px; /* Prevents zoom on iOS */
+      border-radius: 8px;
+    }
+    
+    /* Enhanced mobile navigation */
+    .mobile-device header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Better mobile card layouts */
+    .mobile-device .meal-card {
+      margin: 10px 0;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .mobile-device .replacement-card {
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Improved mobile button styling */
+    .mobile-device .button-group button {
+      border-radius: 8px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .mobile-device .button-group button:active {
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      transform: translateY(1px);
     }
 
     /* Add CSS for dietary tags */
@@ -2178,6 +2542,77 @@
         padding: 5px;
       }
       
+      /* Verification form mobile optimizations */
+      .verification-overlay {
+        padding: 10px;
+      }
+      
+      .verification-overlay .form {
+        margin: 0;
+        padding: 20px 15px;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 20px;
+        min-height: auto;
+      }
+      
+      .verification-overlay .form .title {
+        font-size: 1.3em;
+        margin-bottom: 8px;
+      }
+      
+      .verification-overlay .form .description {
+        font-size: 0.9em;
+        margin-bottom: 15px;
+        text-align: center;
+        line-height: 1.4;
+      }
+      
+      .verification-overlay .input-fields {
+        gap: 6px;
+        max-width: 260px;
+        margin: 15px auto;
+      }
+      
+      .verification-overlay .input-fields input {
+        width: 2.2em;
+        height: 2.2em;
+        font-size: 1.1rem;
+        border-radius: 8px;
+      }
+      
+      .verification-overlay .verify {
+        padding: 15px 30px;
+        font-size: 1em;
+        margin-top: 15px;
+        width: 100%;
+        max-width: 200px;
+      }
+      
+      .verification-overlay .auth-logo {
+        width: 150px;
+        margin-bottom: 15px;
+      }
+      
+      /* Mobile optimization for the "Get Code" section */
+      .verification-overlay .form > div:last-child {
+        margin-top: 20px;
+        text-align: center;
+      }
+      
+      .verification-overlay .form > div:last-child p {
+        font-size: 0.8em;
+        margin-bottom: 12px;
+        line-height: 1.4;
+      }
+      
+      .verification-overlay .form > div:last-child button {
+        padding: 10px 20px;
+        font-size: 0.9em;
+        border-radius: 6px;
+        min-height: 44px;
+      }
+      
       .recipe-modal-content, .replacement-modal-content {
         width: 100% !important;
         max-width: 100% !important;
@@ -2186,6 +2621,7 @@
         max-height: 95vh;
         overflow-y: auto;
         position: relative;
+        -webkit-overflow-scrolling: touch;
       }
       
       .close-modal-btn {
@@ -2200,6 +2636,9 @@
         border-radius: 0 !important;
         margin-bottom: 10px;
         min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       
       .recipe-modal-body {
@@ -2209,6 +2648,48 @@
       .recipe-modal-image {
         height: 200px !important;
         border-radius: 0 !important;
+      }
+      
+      /* Better modal content spacing */
+      .recipe-modal-content h2,
+      .replacement-modal-content h2 {
+        font-size: 1.3em;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+      }
+      
+      .recipe-modal-body h3 {
+        font-size: 1.1em;
+        margin: 15px 0 8px;
+      }
+      
+      .recipe-modal-body ul,
+      .recipe-modal-body ol {
+        padding-left: 20px;
+        margin: 10px 0;
+      }
+      
+      .recipe-modal-body li {
+        padding: 5px 0;
+        line-height: 1.5;
+      }
+      
+      /* Improve ingredient sections in modals */
+      .ingredient-section-header {
+        font-size: 1em !important;
+        padding: 10px 12px !important;
+        margin: 15px 0 8px !important;
+      }
+      
+      .ingredient-item {
+        padding: 6px 0;
+        line-height: 1.4;
+      }
+      
+      .ingredient-warning {
+        font-size: 0.7em;
+        padding: 2px 4px;
+        margin-left: 6px;
       }
     }
 
@@ -2701,7 +3182,7 @@
     ];
 
     // Add hidden condiment trigger foods for backend processing
-    const hiddenTriggerFoods = ["Ketchup", "Mayonnaise", "Mustard"];
+    const hiddenTriggerFoods = ["Ketchup", "Mayonnaise", "Mustard", "Sprite", "Coca Cola", "Pepsi", "Fanta", "Mountain Dew", "Dr Pepper", "7 Up"];
 
     const replacementMapping = {
       "Walnut": [
@@ -3116,6 +3597,50 @@
       ],
       "Mustard": [
         "Sugar-free mustard without honey; stone-ground mustard often avoids added sweeteners"
+      ],
+      "Sprite": [
+        "Sugar-free Sprite Zero",
+        "Sparkling water with lemon/lime",
+        "Unsweetened iced tea",
+        "Water with fresh lemon/lime slices"
+      ],
+      "Coca Cola": [
+        "Coca-Cola Zero Sugar",
+        "Diet Coke",
+        "Sparkling water",
+        "Unsweetened iced tea",
+        "Coffee or tea without sugar"
+      ],
+      "Pepsi": [
+        "Pepsi Zero Sugar",
+        "Diet Pepsi",
+        "Sparkling water",
+        "Unsweetened iced tea"
+      ],
+      "Fanta": [
+        "Sugar-free Fanta Zero",
+        "Sparkling water with natural fruit essence",
+        "Fresh fruit juice (diluted)",
+        "Unsweetened iced tea"
+      ],
+      "Mountain Dew": [
+        "Mountain Dew Zero Sugar",
+        "Diet Mountain Dew",
+        "Sparkling water with citrus",
+        "Unsweetened iced tea"
+      ],
+      "Dr Pepper": [
+        "Dr Pepper Zero Sugar",
+        "Diet Dr Pepper",
+        "Sparkling water",
+        "Unsweetened iced tea",
+        "Coffee without sugar"
+      ],
+      "7 Up": [
+        "7 Up Zero Sugar",
+        "Diet 7 Up",
+        "Sparkling water with lemon/lime",
+        "Unsweetened iced tea"
       ]
     };
 
@@ -3419,6 +3944,62 @@
         mayContain: [
           "Sugar", "Honey", "Vinegar", "Wine", "Spices", "Natural flavoring"
         ]
+      },
+      "Sprite": {
+        directForms: [
+          "Sprite", "Sprite soda", "Sprite soft drink", "Sprite lemon-lime soda"
+        ],
+        mayContain: [
+          "Sugar", "High fructose corn syrup", "Corn syrup", "Corn", "Lemon", "Lime"
+        ]
+      },
+      "Coca Cola": {
+        directForms: [
+          "Coca Cola", "Coke", "Coca-Cola", "Coca Cola Classic", "Coke Classic"
+        ],
+        mayContain: [
+          "Sugar", "High fructose corn syrup", "Corn syrup", "Corn", "Cocoa"
+        ]
+      },
+      "Pepsi": {
+        directForms: [
+          "Pepsi", "Pepsi Cola", "Pepsi-Cola", "Pepsi Classic"
+        ],
+        mayContain: [
+          "Sugar", "High fructose corn syrup", "Corn syrup", "Corn"
+        ]
+      },
+      "Fanta": {
+        directForms: [
+          "Fanta", "Fanta Orange", "Fanta Grape", "Fanta Strawberry"
+        ],
+        mayContain: [
+          "Sugar", "High fructose corn syrup", "Corn syrup", "Corn", "Orange", "Grapefruit"
+        ]
+      },
+      "Mountain Dew": {
+        directForms: [
+          "Mountain Dew", "Mtn Dew", "Mountain Dew Code Red", "Mountain Dew Voltage"
+        ],
+        mayContain: [
+          "Sugar", "High fructose corn syrup", "Corn syrup", "Corn", "Lemon", "Lime"
+        ]
+      },
+      "Dr Pepper": {
+        directForms: [
+          "Dr Pepper", "Dr. Pepper", "Dr Pepper Cherry", "Dr Pepper Vanilla"
+        ],
+        mayContain: [
+          "Sugar", "High fructose corn syrup", "Corn syrup", "Corn", "Cocoa"
+        ]
+      },
+      "7 Up": {
+        directForms: [
+          "7 Up", "7-Up", "7Up", "Seven Up"
+        ],
+        mayContain: [
+          "Sugar", "High fructose corn syrup", "Corn syrup", "Corn", "Lemon", "Lime"
+        ]
       }
     };
     // Update the checkIngredientForTriggers function to be more thorough
@@ -3581,7 +4162,7 @@
     function checkIngredientWarnings(ingredient, selectedTriggerFoods) {
       const cleanedIngredient = cleanText(ingredient);
       const warnings = [];
-      const condiments = ["Ketchup", "Mayonnaise", "Mustard"];
+      const condiments = ["Ketchup", "Mayonnaise", "Mustard", "Sprite", "Coca Cola", "Pepsi", "Fanta", "Mountain Dew", "Dr Pepper", "7 Up"];
       
       // Helper function to check if a word is contained within ingredient text
       const containsWord = (text, word) => {
@@ -3600,8 +4181,8 @@
           // Check if any of the condiment's mayContain ingredients match user's selected trigger foods
           selectedTriggerFoods.forEach(triggerFood => {
             // Check if this trigger food is in the condiment's mayContain list
-            const containsTrigger = condimentRelationship.mayContain.some(ingredient => 
-              containsWord(ingredient, triggerFood)
+            const containsTrigger = condimentRelationship.mayContain.some(mayContainItem => 
+              mayContainItem.toLowerCase() === triggerFood.toLowerCase()
             );
             
             if (containsTrigger) {
@@ -3697,7 +4278,7 @@
       const cleanedIngredients = cleanIngredientsList(recipe.ingredients);
       
       cleanedIngredients.forEach(ingredient => {
-        const condiments = ["Ketchup", "Mayonnaise", "Mustard"];
+        const condiments = ["Ketchup", "Mayonnaise", "Mustard", "Sprite", "Coca Cola", "Pepsi", "Fanta", "Mountain Dew", "Dr Pepper", "7 Up"];
         const matchedCondiment = condiments.find(c => 
           new RegExp(`(^|\\s)${c}($|\\s|[,.:;])`, 'i').test(ingredient)
         );
@@ -4559,7 +5140,7 @@
       
       recipe.ingredients.forEach(ingredient => {
         // First check if ingredient is a condiment
-        const condiments = ["Ketchup", "Mayonnaise", "Mustard"];
+        const condiments = ["Ketchup", "Mayonnaise", "Mustard", "Sprite", "Coca Cola", "Pepsi", "Fanta", "Mountain Dew", "Dr Pepper", "7 Up"];
         const matchedCondiment = condiments.find(c => 
           new RegExp(`(^|\\s)${c}($|\\s|[,.:;])`, 'i').test(ingredient)
         );
@@ -8098,6 +8679,46 @@
         scrollElements.forEach(element => {
           element.style.webkitOverflowScrolling = 'touch';
         });
+        
+        // Add mobile-specific optimizations
+        document.body.classList.add('mobile-device');
+        
+        // Improve touch targets on mobile
+        const touchTargets = document.querySelectorAll('.food-toggle-btn, .preference-option, .button-group button');
+        touchTargets.forEach(target => {
+          target.style.minHeight = '44px';
+          target.style.minWidth = '44px';
+        });
+        
+        // Add swipe gestures for panels on mobile
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+        
+        const panels = document.querySelectorAll('#savedMealsPanel, #rightToolsPanel');
+        panels.forEach(panel => {
+          panel.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            isDragging = true;
+          }, { passive: true });
+          
+          panel.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            currentX = e.touches[0].clientX;
+            const deltaX = currentX - startX;
+            
+            // Add visual feedback for swipe
+            if (Math.abs(deltaX) > 10) {
+              panel.style.transform = `translateX(${deltaX * 0.1}px)`;
+            }
+          }, { passive: true });
+          
+          panel.addEventListener('touchend', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            panel.style.transform = '';
+          }, { passive: true });
+        });
       }
       
       // Optimize dynamically loaded images
@@ -8106,6 +8727,15 @@
           mutation.addedNodes.forEach((node) => {
             if (node.nodeType === 1) { // Element node
               optimizeImages(node);
+              
+              // Apply mobile optimizations to new elements
+              if (window.innerWidth <= 768) {
+                const newTouchTargets = node.querySelectorAll('.food-toggle-btn, .preference-option, .button-group button');
+                newTouchTargets.forEach(target => {
+                  target.style.minHeight = '44px';
+                  target.style.minWidth = '44px';
+                });
+              }
             }
           });
         });
@@ -8115,6 +8745,29 @@
         childList: true,
         subtree: true
       });
+      
+      // Handle orientation changes
+      window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+          // Recalculate layout after orientation change
+          if (window.innerWidth <= 768) {
+            const scrollElements = document.querySelectorAll('#savedMealsPanel, #rightToolsPanel, #replacementMeal');
+            scrollElements.forEach(element => {
+              element.style.webkitOverflowScrolling = 'touch';
+            });
+          }
+        }, 100);
+      });
+      
+      // Prevent zoom on double tap for iOS
+      let lastTouchEnd = 0;
+      document.addEventListener('touchend', (event) => {
+        const now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+          event.preventDefault();
+        }
+        lastTouchEnd = now;
+      }, false);
     });
 
     // Override existing modal creation functions to include mobile enhancements
