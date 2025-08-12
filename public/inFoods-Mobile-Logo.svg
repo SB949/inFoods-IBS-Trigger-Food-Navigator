@@ -1,0 +1,28 @@
+<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4489c9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#51baad;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="tealGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#51baad;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a3c962;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="greenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a3c962;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4489c9;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Blue arc -->
+  <path d="M 30 30 A 20 20 0 0 1 50 30 A 15 15 0 0 0 35 15 A 20 20 0 0 1 30 30" 
+        fill="url(#blueGradient)" stroke="none"/>
+  
+  <!-- Teal arc -->
+  <path d="M 30 30 A 20 20 0 0 1 10 30 A 15 15 0 0 0 25 45 A 20 20 0 0 1 30 30" 
+        fill="url(#tealGradient)" stroke="none"/>
+  
+  <!-- Green arc -->
+  <path d="M 30 30 A 20 20 0 0 1 30 10 A 15 15 0 0 0 45 25 A 20 20 0 0 1 30 30" 
+        fill="url(#greenGradient)" stroke="none"/>
+</svg>
