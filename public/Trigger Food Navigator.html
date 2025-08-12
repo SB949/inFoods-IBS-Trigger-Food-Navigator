@@ -4833,21 +4833,15 @@
       const modal = document.createElement('div');
       modal.className = 'recipe-modal';
       
-      const safeRecipeName = getRecipeImagePath(recipe.name);
       const imgElement = document.createElement('img');
       imgElement.className = 'recipe-modal-image';
       imgElement.alt = recipe.name;
-      imgElement.src = `./recipe images/${safeRecipeName}.jpg`;
-      imgElement.onerror = function() {
-        this.onerror = null;
-        if(this.src.endsWith('.jpg')) {
-          this.src = `./recipe images/${safeRecipeName}.jpeg`;
-        } else if(this.src.endsWith('.jpeg')) {
-          this.src = `./recipe images/${safeRecipeName}.png`;
-        } else {
-          this.src = './recipe images/placeholder-meal.jpg';
-        }
-      };
+      imgElement.src = './recipe images/placeholder-meal.jpg';
+      
+      // Load the actual image with fallback
+      loadRecipeImageWithFallback(recipe.name).then(imageSrc => {
+        imgElement.src = imageSrc;
+      });
       
       // Check for trigger foods and get substitutions
       const triggerCheck = checkRecipeForTriggerFoods(recipe, selectedFoods);
@@ -5185,23 +5179,17 @@
       modal.className = 'recipe-modal saved-meal-modal';
       
       const macros = recipe.macros || {};
-      const safeRecipeName = getRecipeImagePath(recipe.name);
       
       // Create image element with proper fallback chain
       const imgElement = document.createElement('img');
       imgElement.className = 'recipe-modal-image';
       imgElement.alt = recipe.name;
-      imgElement.src = `./recipe images/${safeRecipeName}.jpg`;
-      imgElement.onerror = function() {
-        this.onerror = null;
-        if(this.src.endsWith('.jpg')) {
-          this.src = `./recipe images/${safeRecipeName}.jpeg`;
-        } else if(this.src.endsWith('.jpeg')) {
-          this.src = `./recipe images/${safeRecipeName}.png`;
-        } else {
-          this.src = './recipe images/placeholder-meal.jpg';
-        }
-      };
+      imgElement.src = './recipe images/placeholder-meal.jpg';
+      
+      // Load the actual image with fallback
+      loadRecipeImageWithFallback(recipe.name).then(imageSrc => {
+        imgElement.src = imageSrc;
+      });
       
       // Get the current selected trigger foods
       const currentTriggerFoods = Array.from(document.querySelectorAll('.food-item.selected'))
@@ -5679,23 +5667,60 @@
     // Function to handle image load errors
     function handleImageError(img) {
       const extensions = ['.jpg', '.jpeg', '.webp', '.png'];
-      const currentSrc = img.src;
       const baseUrl = 'recipe images/';
       const recipeName = img.dataset.recipeName;
       
-      // Get the current extension
-      const currentExt = currentSrc.substring(currentSrc.lastIndexOf('.'));
-      const currentIndex = extensions.indexOf(currentExt);
+      // Get the current extension from the src
+      const currentSrc = img.src;
+      let currentExt = '';
+      let currentIndex = -1;
       
-      // Try next extension if available
-      if (currentIndex < extensions.length - 1) {
+      // Try to find the current extension in the src
+      for (let ext of extensions) {
+        if (currentSrc.includes(ext)) {
+          currentExt = ext;
+          currentIndex = extensions.indexOf(ext);
+          break;
+        }
+      }
+      
+      // If we found the current extension, try the next one
+      if (currentIndex >= 0 && currentIndex < extensions.length - 1) {
         const nextExt = extensions[currentIndex + 1];
         img.src = `${baseUrl}${getRecipeImagePath(recipeName)}${nextExt}`;
       } else {
-        // If all extensions failed, use placeholder
+        // If we couldn't find the current extension or we've tried all extensions, use placeholder
         img.src = `${baseUrl}placeholder-meal.jpg`;
         img.onerror = null; // Remove error handler to prevent infinite loop
       }
+    }
+
+    // Function to load recipe image with fallback extensions
+    function loadRecipeImageWithFallback(recipeName) {
+      return new Promise((resolve) => {
+        const extensions = ['.jpg', '.jpeg', '.webp', '.png'];
+        const baseUrl = 'recipe images/';
+        const safeRecipeName = getRecipeImagePath(recipeName);
+        let currentIndex = 0;
+        
+        const tryNextExtension = () => {
+          if (currentIndex >= extensions.length) {
+            // All extensions failed, return placeholder
+            resolve(`${baseUrl}placeholder-meal.jpg`);
+            return;
+          }
+          
+          const img = new Image();
+          img.onload = () => resolve(`${baseUrl}${safeRecipeName}${extensions[currentIndex]}`);
+          img.onerror = () => {
+            currentIndex++;
+            tryNextExtension();
+          };
+          img.src = `${baseUrl}${safeRecipeName}${extensions[currentIndex]}`;
+        };
+        
+        tryNextExtension();
+      });
     }
 
     // Function to extract Cook's Notes from instructions
@@ -5818,7 +5843,7 @@
       card.innerHTML = `
         <button class="save-meal-btn" onclick="saveMeal(${JSON.stringify(recipe).replace(/"/g, '&quot;')})">+</button>
         <img class="meal-image" 
-             src="recipe images/${getRecipeImagePath(recipe.name)}.jpg" 
+             src="recipe images/placeholder-meal.jpg" 
              alt="${recipe.name}"
              data-recipe-name="${recipe.name}"
              onerror="handleImageError(this)">
@@ -5845,6 +5870,14 @@
           Read More
         </div>
       `;
+
+      // Load the actual image with fallback
+      const imgElement = card.querySelector('.meal-image');
+      if (imgElement) {
+        loadRecipeImageWithFallback(recipe.name).then(imageSrc => {
+          imgElement.src = imageSrc;
+        });
+      }
 
       return card;
     }
