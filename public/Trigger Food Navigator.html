@@ -308,7 +308,10 @@
       flex-direction: column;
       padding: 20px;
       overflow-y: auto;
+      overflow-x: hidden;
       background: var(--background);
+      width: 100%;
+      box-sizing: border-box;
     }
 
     /* Right Panel */
@@ -352,6 +355,9 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       visibility: visible !important;
       opacity: 1 !important;
+      width: 100%;
+      box-sizing: border-box;
+      overflow-x: hidden;
     }
 
     .food-item {
@@ -1599,16 +1605,20 @@
       
       /* Food selection grid - smaller items on mobile */
       .food-selection {
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        grid-template-columns: repeat(4, 1fr);
         gap: 8px;
         padding: 10px 5px;
+        overflow-x: hidden;
+        width: 100%;
       }
       
       .food-item {
         padding: 8px;
         font-size: 0.8em;
         min-height: 80px;
-        min-width: 80px;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
       }
       
       .food-item img {
@@ -1829,8 +1839,10 @@
       }
 
       .food-selection {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        grid-template-columns: repeat(4, 1fr);
         gap: 10px;
+        overflow-x: hidden;
+        width: 100%;
       }
 
       .preference-selection {
@@ -1871,7 +1883,9 @@
       /* Enhanced touch targets for tablet */
       .food-item {
         min-height: 90px;
-        min-width: 90px;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
       }
       
       .food-toggle-btn {
@@ -1915,8 +1929,10 @@
       }
       
       .food-selection {
-        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        grid-template-columns: repeat(4, 1fr);
         gap: 12px;
+        overflow-x: hidden;
+        width: 100%;
       }
     }
 
@@ -1943,8 +1959,10 @@
       }
       
       .food-selection {
-        grid-template-columns: repeat(9, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 15px;
+        overflow-x: hidden;
+        width: 100%;
       }
       
       .meal-card {
@@ -1978,7 +1996,9 @@
       }
       
       .food-selection {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        grid-template-columns: repeat(4, 1fr);
+        overflow-x: hidden;
+        width: 100%;
       }
       
       .meal-card {
