@@ -47,15 +47,13 @@
     
     /* Theme Switcher */
     .theme-switch {
-      position: absolute;
-      right: 20px;
-      top: 50%;
-      transform: translateY(-50%);
       display: flex;
       align-items: center;
       gap: 8px;
       color: var(--background);
       cursor: pointer;
+      flex-shrink: 0;
+      font-size: 0.9em;
     }
     
     .theme-switch-icon {
@@ -95,15 +93,16 @@
       position: relative;
       margin-bottom: 20px;
       padding: 0 20px;
+      gap: 15px;
     }
 
     .header-content {
       display: flex;
       align-items: center;
-      justify-content: center;
       flex: 1;
       height: 100%;
       position: relative;
+      gap: 15px;
     }
 
     .logo {
@@ -111,26 +110,62 @@
       width: auto;
       object-fit: contain;
       display: block;
+      flex-shrink: 0;
     }
 
     header h1 {
       font-size: 1.8em;
       text-align: center;
-      margin: 0 auto;
+      margin: 0;
       flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     @media (max-width: 768px) {
+      header {
+        height: 70px;
+        padding: 0 15px;
+        gap: 10px;
+      }
+
       .header-content {
         gap: 10px;
       }
 
       .logo {
-        height: 35px;
+        height: 30px;
       }
 
       header h1 {
-        font-size: 1.4em;
+        font-size: 1.2em;
+        white-space: normal;
+        line-height: 1.2;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        height: 80px;
+        padding: 0 10px;
+      }
+
+      .logo {
+        height: 25px;
+      }
+
+      header h1 {
+        font-size: 1.1em;
+      }
+
+      .theme-switch {
+        font-size: 0.8em;
+        gap: 5px;
+      }
+
+      .theme-switch #theme-text {
+        display: none;
       }
     }
     
