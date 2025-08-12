@@ -4515,16 +4515,24 @@
             containsTriggerFoods.push(triggerFood);
             // Get substitutions from replacementMapping
             if (replacementMapping[triggerFood]) {
-              const replacements = replacementMapping[triggerFood]
-                .filter(r => !r.includes(':') && !r.includes('-'))
-                .map(r => r.trim())
-                .filter(r => r);
+              let replacementList = [];
+              if (Array.isArray(replacementMapping[triggerFood])) {
+                replacementList = replacementMapping[triggerFood]
+                  .filter(r => !r.includes(':') && !r.includes('-'))
+                  .map(r => r.trim())
+                  .filter(r => r);
+              } else if (replacementMapping[triggerFood].directForms) {
+                // Handle object format (like Sugar)
+                replacementList = replacementMapping[triggerFood].directForms;
+              }
               
-              substitutions.push({
-                ingredient,
-                triggerFood,
-                replacements
-              });
+              if (replacementList.length > 0) {
+                substitutions.push({
+                  ingredient,
+                  triggerFood,
+                  replacements: replacementList
+                });
+              }
             }
           }
         });
@@ -4771,27 +4779,38 @@
       selectedFoods.forEach((food, index) => {
         const replacements = replacementMapping[food];
         if (replacements) {
-          const card = document.createElement('div');
-          card.className = 'replacement-card';
+          // Handle both array and object formats
+          let replacementList = [];
+          if (Array.isArray(replacements)) {
+            replacementList = replacements;
+          } else if (replacements.directForms) {
+            // Handle object format (like Sugar)
+            replacementList = replacements.directForms;
+          }
           
-          card.innerHTML = `
-            <h3>${food} Replacements:</h3>
-            <div class="recipe-details">
-              <ul>
-                ${replacements.slice(0, 3).map(replacement => `<li>${replacement}</li>`).join('')}
-              </ul>
-              <button class="view-details-btn" onclick="showReplacementDetails('${food}', ${JSON.stringify(replacements).replace(/"/g, '&quot;')})">
-                View All Replacements
-              </button>
-            </div>
-          `;
-          
-          setTimeout(() => {
-            replacementDisplay.appendChild(card);
-            requestAnimationFrame(() => {
-              card.classList.add('show');
-            });
-          }, index * 100);
+          if (replacementList.length > 0) {
+            const card = document.createElement('div');
+            card.className = 'replacement-card';
+            
+            card.innerHTML = `
+              <h3>${food} Replacements:</h3>
+              <div class="recipe-details">
+                <ul>
+                  ${replacementList.slice(0, 3).map(replacement => `<li>${replacement}</li>`).join('')}
+                </ul>
+                <button class="view-details-btn" onclick="showReplacementDetails('${food}', ${JSON.stringify(replacementList).replace(/"/g, '&quot;')})">
+                  View All Replacements
+                </button>
+              </div>
+            `;
+            
+            setTimeout(() => {
+              replacementDisplay.appendChild(card);
+              requestAnimationFrame(() => {
+                card.classList.add('show');
+              });
+            }, index * 100);
+          }
         }
       });
     }
