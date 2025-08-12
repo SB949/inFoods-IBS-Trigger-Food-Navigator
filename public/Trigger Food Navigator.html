@@ -578,20 +578,7 @@
       background: var(--primary) !important;
     }
 
-    .loading-spinner {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: white;
-      animation: spin 1s ease-in-out infinite;
-      margin-left: 10px;
-    }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
 
     /* Replacement Display */
     #replacementDisplay {
@@ -2438,17 +2425,7 @@
       transition: opacity 0.5s ease-out, transform 0.5s ease-out;
     }
 
-    /* Update loading spinner */
-    .loading-spinner {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: white;
-      animation: spin 1s ease-in-out infinite;
-      margin-left: 10px;
-    }
+
 
     /* Recipe Images */
     .recipe-modal-image {
@@ -3152,7 +3129,6 @@
         <button id="resetBtn">Reset Selections</button>
         <button id="fetchRecipesBtn" class="fetch-recipes-btn">
           <span>Suggest Meals</span>
-          <div class="loading-spinner"></div>
         </button>
       </div>
   
@@ -4963,8 +4939,6 @@
         console.log('Initializing Suggest Meals button');
         fetchButton.addEventListener('click', async function() {
           console.log('Suggest Meals button clicked');
-          const spinner = this.querySelector('.loading-spinner');
-          spinner.style.display = 'inline-block';
           
           try {
             // If recipes haven't been loaded yet, try loading them again
@@ -4975,8 +4949,6 @@
           } catch (error) {
             console.error('Error fetching recipes:', error);
             showNotification('Failed to fetch recipes. Please try again later.', 'error');
-          } finally {
-            spinner.style.display = 'none';
           }
         });
       } else {
@@ -5511,8 +5483,6 @@
     // Update fetchAndDisplayRecipes to not handle replacement suggestions
     async function fetchAndDisplayRecipes() {
       console.log('Starting fetchAndDisplayRecipes function');
-      const spinner = document.querySelector('.loading-spinner');
-      spinner.style.display = 'inline-block';
       
       try {
         // Load recipes if not already loaded
@@ -5533,8 +5503,6 @@
       } catch (error) {
         console.error('Error in fetchAndDisplayRecipes:', error);
         showNotification(`Failed to display suggestions: ${error.message}. Please try again.`, 'error');
-      } finally {
-        spinner.style.display = 'none';
       }
     }
     // Show detailed recipe information
