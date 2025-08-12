@@ -7443,7 +7443,8 @@
         processingInfo: {},
         crossContamination: false,
         brandRecommendations: [],
-        cookingTips: []
+        cookingTips: [],
+        specificDetails: {} // New field for specific ingredient details
       };
 
       // 1. Basic trigger food analysis
@@ -7480,13 +7481,16 @@
       // 10. Context analysis
       analysis.context = analyzeContext(ingredient, selectedTriggerFoods);
 
+      // 11. Specific ingredient details (NEW)
+      analysis.specificDetails = getSpecificIngredientDetails(ingredient, selectedTriggerFoods);
+
       return analysis;
     }
 
     // Enhanced result generation
     function generateEnhancedResult(analysis, ingredient, selectedTriggerFoods) {
       const { warnings, synonyms, alternatives, riskLevel, context, processingInfo, 
-              crossContamination, brandRecommendations, cookingTips } = analysis;
+              crossContamination, brandRecommendations, cookingTips, specificDetails } = analysis;
       
       const containsWarnings = warnings.filter(w => w.type === 'contains');
       const mayContainWarnings = warnings.filter(w => w.type === 'mayContain');
@@ -7577,7 +7581,19 @@
         `;
       }
 
-
+      // Add specific ingredient details (NEW)
+      if (specificDetails && Object.keys(specificDetails).length > 0) {
+        resultHtml += `
+          <div class="ingredient-info-section">
+            <h5>📋 Specific Details:</h5>
+            ${Object.entries(specificDetails).map(([key, value]) => `
+              <div class="detail-item">
+                <strong>${key}:</strong> ${value}
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
 
       return resultHtml;
     }
@@ -7680,6 +7696,350 @@
       }
 
       return [...new Set(synonyms)].slice(0, 5); // Limit to 5 synonyms
+    }
+
+    // NEW: Specific ingredient details function
+    function getSpecificIngredientDetails(ingredient, selectedTriggerFoods) {
+      const ingredientLower = ingredient.toLowerCase();
+      const details = {};
+
+      // Soup-specific analysis
+      if (ingredientLower.includes('soup')) {
+        const soupDetails = analyzeSoupTypes(ingredientLower, selectedTriggerFoods);
+        if (Object.keys(soupDetails).length > 0) {
+          Object.assign(details, soupDetails);
+        }
+      }
+
+      // Sauce-specific analysis
+      if (ingredientLower.includes('sauce')) {
+        const sauceDetails = analyzeSauceTypes(ingredientLower, selectedTriggerFoods);
+        if (Object.keys(sauceDetails).length > 0) {
+          Object.assign(details, sauceDetails);
+        }
+      }
+
+      // Bread-specific analysis
+      if (ingredientLower.includes('bread') || ingredientLower.includes('bun') || ingredientLower.includes('roll')) {
+        const breadDetails = analyzeBreadTypes(ingredientLower, selectedTriggerFoods);
+        if (Object.keys(breadDetails).length > 0) {
+          Object.assign(details, breadDetails);
+        }
+      }
+
+      // Chocolate-specific analysis
+      if (ingredientLower.includes('chocolate')) {
+        const chocolateDetails = analyzeChocolateTypes(ingredientLower, selectedTriggerFoods);
+        if (Object.keys(chocolateDetails).length > 0) {
+          Object.assign(details, chocolateDetails);
+        }
+      }
+
+      return details;
+    }
+
+    // Soup analysis function
+    function analyzeSoupTypes(ingredientLower, selectedTriggerFoods) {
+      const details = {};
+      const hasMilk = selectedTriggerFoods.some(tf => tf.toLowerCase() === 'milk');
+      const hasWheat = selectedTriggerFoods.some(tf => tf.toLowerCase() === 'wheat');
+      const hasEgg = selectedTriggerFoods.some(tf => tf.toLowerCase() === 'egg');
+
+      // Define soup types and their likelihood of containing trigger foods
+      const soupTypes = {
+        'cream soups': {
+          milk: 'Very High - Cream soups typically contain milk, cream, or butter',
+          wheat: 'Medium - May contain flour as thickener',
+          egg: 'Low - Rarely contains eggs'
+        },
+        'chowder': {
+          milk: 'Very High - Chowders are cream-based soups',
+          wheat: 'Medium - May contain flour as thickener',
+          egg: 'Low - Rarely contains eggs'
+        },
+        'bisque': {
+          milk: 'Very High - Bisques are cream-based soups',
+          wheat: 'Medium - May contain flour as thickener',
+          egg: 'Low - Rarely contains eggs'
+        },
+        'broth-based': {
+          milk: 'Very Low - Clear broths rarely contain dairy',
+          wheat: 'Low - May contain noodles or dumplings',
+          egg: 'Low - May contain egg noodles or dumplings'
+        },
+        'clear soup': {
+          milk: 'Very Low - Clear soups rarely contain dairy',
+          wheat: 'Low - May contain noodles',
+          egg: 'Low - May contain egg noodles'
+        },
+        'vegetable soup': {
+          milk: 'Low - Usually dairy-free unless cream is added',
+          wheat: 'Low - May contain noodles or dumplings',
+          egg: 'Low - May contain egg noodles or dumplings'
+        },
+        'tomato soup': {
+          milk: 'Medium - Often contains cream or milk for richness',
+          wheat: 'Low - May contain flour as thickener',
+          egg: 'Very Low - Rarely contains eggs'
+        },
+        'miso soup': {
+          milk: 'Very Low - Traditional miso soup is dairy-free',
+          wheat: 'Low - May contain wheat-based miso',
+          egg: 'Low - May contain egg'
+        },
+        'pho': {
+          milk: 'Very Low - Traditional pho is dairy-free',
+          wheat: 'Medium - Contains rice noodles (gluten-free)',
+          egg: 'Low - May contain egg'
+        },
+        'ramen': {
+          milk: 'Very Low - Traditional ramen is dairy-free',
+          wheat: 'High - Contains wheat noodles',
+          egg: 'Medium - May contain egg noodles or soft-boiled egg'
+        },
+        'minestrone': {
+          milk: 'Very Low - Traditional minestrone is dairy-free',
+          wheat: 'Medium - May contain pasta',
+          egg: 'Low - May contain egg pasta'
+        },
+        'gazpacho': {
+          milk: 'Very Low - Cold soup, typically dairy-free',
+          wheat: 'Very Low - No wheat ingredients',
+          egg: 'Very Low - No egg ingredients'
+        },
+        'borscht': {
+          milk: 'Low - May contain sour cream as garnish',
+          wheat: 'Low - May contain bread on the side',
+          egg: 'Very Low - Rarely contains eggs'
+        }
+      };
+
+      // Determine which type of soup this is
+      let soupType = 'general soup';
+      for (const [type, keywords] of Object.entries({
+        'cream soups': ['cream', 'creamy', 'chowder', 'bisque'],
+        'chowder': ['chowder'],
+        'bisque': ['bisque'],
+        'broth-based': ['broth', 'clear', 'consomme'],
+        'clear soup': ['clear', 'consomme'],
+        'vegetable soup': ['vegetable', 'veggie'],
+        'tomato soup': ['tomato'],
+        'miso soup': ['miso'],
+        'pho': ['pho'],
+        'ramen': ['ramen'],
+        'minestrone': ['minestrone'],
+        'gazpacho': ['gazpacho'],
+        'borscht': ['borscht']
+      })) {
+        if (keywords.some(keyword => ingredientLower.includes(keyword))) {
+          soupType = type;
+          break;
+        }
+      }
+
+      // Add specific details based on soup type and trigger foods
+      if (soupTypes[soupType]) {
+        if (hasMilk && soupTypes[soupType].milk) {
+          details['Milk Risk'] = soupTypes[soupType].milk;
+        }
+        if (hasWheat && soupTypes[soupType].wheat) {
+          details['Wheat Risk'] = soupTypes[soupType].wheat;
+        }
+        if (hasEgg && soupTypes[soupType].egg) {
+          details['Egg Risk'] = soupTypes[soupType].egg;
+        }
+      }
+
+      // Add general soup advice
+      if (hasMilk) {
+        details['Soup Advice'] = 'Look for "dairy-free," "vegan," or "plant-based" soups. Clear broths and vegetable-based soups are usually safe.';
+      }
+      if (hasWheat) {
+        details['Noodle Note'] = 'Many soups contain wheat-based noodles. Look for gluten-free alternatives or soups without noodles.';
+      }
+
+      return details;
+    }
+
+    // Sauce analysis function
+    function analyzeSauceTypes(ingredientLower, selectedTriggerFoods) {
+      const details = {};
+      const hasMilk = selectedTriggerFoods.some(tf => tf.toLowerCase() === 'milk');
+      const hasWheat = selectedTriggerFoods.some(tf => tf.toLowerCase() === 'wheat');
+      const hasEgg = selectedTriggerFoods.some(tf => tf.toLowerCase() === 'egg');
+
+      const sauceTypes = {
+        'cream sauce': {
+          milk: 'Very High - Contains cream, milk, or butter',
+          wheat: 'Medium - May contain flour as thickener',
+          egg: 'Low - Rarely contains eggs'
+        },
+        'alfredo': {
+          milk: 'Very High - Cream and cheese-based sauce',
+          wheat: 'Medium - May contain flour as thickener',
+          egg: 'Low - Rarely contains eggs'
+        },
+        'bechamel': {
+          milk: 'Very High - Milk-based white sauce',
+          wheat: 'High - Contains flour as thickener',
+          egg: 'Low - Rarely contains eggs'
+        },
+        'marinara': {
+          milk: 'Very Low - Tomato-based, usually dairy-free',
+          wheat: 'Low - May contain flour as thickener',
+          egg: 'Very Low - Rarely contains eggs'
+        },
+        'pesto': {
+          milk: 'Medium - May contain cheese',
+          wheat: 'Low - Usually gluten-free',
+          egg: 'Very Low - Rarely contains eggs'
+        }
+      };
+
+      // Determine sauce type
+      let sauceType = 'general sauce';
+      for (const [type, keywords] of Object.entries({
+        'cream sauce': ['cream', 'creamy', 'alfredo', 'bechamel'],
+        'alfredo': ['alfredo'],
+        'bechamel': ['bechamel'],
+        'marinara': ['marinara', 'tomato'],
+        'pesto': ['pesto']
+      })) {
+        if (keywords.some(keyword => ingredientLower.includes(keyword))) {
+          sauceType = type;
+          break;
+        }
+      }
+
+      if (sauceTypes[sauceType]) {
+        if (hasMilk && sauceTypes[sauceType].milk) {
+          details['Milk Risk'] = sauceTypes[sauceType].milk;
+        }
+        if (hasWheat && sauceTypes[sauceType].wheat) {
+          details['Wheat Risk'] = sauceTypes[sauceType].wheat;
+        }
+        if (hasEgg && sauceTypes[sauceType].egg) {
+          details['Egg Risk'] = sauceTypes[sauceType].egg;
+        }
+      }
+
+      return details;
+    }
+
+    // Bread analysis function
+    function analyzeBreadTypes(ingredientLower, selectedTriggerFoods) {
+      const details = {};
+      const hasWheat = selectedTriggerFoods.some(tf => tf.toLowerCase() === 'wheat');
+      const hasMilk = selectedTriggerFoods.some(tf => tf.toLowerCase() === 'milk');
+      const hasEgg = selectedTriggerFoods.some(tf => tf.toLowerCase() === 'egg');
+
+      const breadTypes = {
+        'white bread': {
+          wheat: 'Very High - Made with wheat flour',
+          milk: 'Medium - May contain milk or butter',
+          egg: 'Low - May contain eggs for richness'
+        },
+        'whole wheat': {
+          wheat: 'Very High - Made with whole wheat flour',
+          milk: 'Medium - May contain milk or butter',
+          egg: 'Low - May contain eggs for richness'
+        },
+        'sourdough': {
+          wheat: 'Very High - Made with wheat flour',
+          milk: 'Low - Usually dairy-free',
+          egg: 'Low - Usually egg-free'
+        },
+        'rye bread': {
+          wheat: 'Medium - May contain some wheat flour',
+          milk: 'Low - Usually dairy-free',
+          egg: 'Low - Usually egg-free'
+        },
+        'gluten-free': {
+          wheat: 'Very Low - Made without wheat',
+          milk: 'Medium - May contain milk or butter',
+          egg: 'Low - May contain eggs'
+        }
+      };
+
+      // Determine bread type
+      let breadType = 'general bread';
+      for (const [type, keywords] of Object.entries({
+        'white bread': ['white', 'sandwich'],
+        'whole wheat': ['whole wheat', 'whole grain'],
+        'sourdough': ['sourdough'],
+        'rye bread': ['rye'],
+        'gluten-free': ['gluten-free', 'gluten free']
+      })) {
+        if (keywords.some(keyword => ingredientLower.includes(keyword))) {
+          breadType = type;
+          break;
+        }
+      }
+
+      if (breadTypes[breadType]) {
+        if (hasWheat && breadTypes[breadType].wheat) {
+          details['Wheat Risk'] = breadTypes[breadType].wheat;
+        }
+        if (hasMilk && breadTypes[breadType].milk) {
+          details['Milk Risk'] = breadTypes[breadType].milk;
+        }
+        if (hasEgg && breadTypes[breadType].egg) {
+          details['Egg Risk'] = breadTypes[breadType].egg;
+        }
+      }
+
+      return details;
+    }
+
+    // Chocolate analysis function
+    function analyzeChocolateTypes(ingredientLower, selectedTriggerFoods) {
+      const details = {};
+      const hasMilk = selectedTriggerFoods.some(tf => tf.toLowerCase() === 'milk');
+      const hasSugar = selectedTriggerFoods.some(tf => tf.toLowerCase() === 'sugar');
+
+      const chocolateTypes = {
+        'milk chocolate': {
+          milk: 'Very High - Contains milk solids',
+          sugar: 'Very High - Contains sugar'
+        },
+        'dark chocolate': {
+          milk: 'Low - Usually dairy-free (check label)',
+          sugar: 'High - Contains sugar'
+        },
+        'white chocolate': {
+          milk: 'Very High - Contains milk solids',
+          sugar: 'Very High - Contains sugar'
+        },
+        'unsweetened chocolate': {
+          milk: 'Very Low - Usually dairy-free',
+          sugar: 'Very Low - No added sugar'
+        }
+      };
+
+      // Determine chocolate type
+      let chocolateType = 'general chocolate';
+      for (const [type, keywords] of Object.entries({
+        'milk chocolate': ['milk chocolate'],
+        'dark chocolate': ['dark chocolate', 'bittersweet'],
+        'white chocolate': ['white chocolate'],
+        'unsweetened chocolate': ['unsweetened', 'baking chocolate']
+      })) {
+        if (keywords.some(keyword => ingredientLower.includes(keyword))) {
+          chocolateType = type;
+          break;
+        }
+      }
+
+      if (chocolateTypes[chocolateType]) {
+        if (hasMilk && chocolateTypes[chocolateType].milk) {
+          details['Milk Risk'] = chocolateTypes[chocolateType].milk;
+        }
+        if (hasSugar && chocolateTypes[chocolateType].sugar) {
+          details['Sugar Risk'] = chocolateTypes[chocolateType].sugar;
+        }
+      }
+
+      return details;
     }
 
     // 2. Enhanced ingredient detection with comprehensive databases
@@ -7932,15 +8292,18 @@
       if (ingredientLower.includes('cereal') || ingredientLower.includes('granola')) {
         return 'cereal';
       }
+      if (ingredientLower.includes('soup') || ingredientLower.includes('broth') || ingredientLower.includes('chowder') || ingredientLower.includes('bisque')) {
+        return 'soup';
+      }
       return 'general';
     }
 
     // Helper function to check if trigger food is relevant to ingredient category
     function isTriggerRelevantToCategory(triggerFood, category) {
       const relevanceMap = {
-        'Milk': ['cheese', 'milk', 'yogurt', 'butter', 'ice cream', 'chocolate'],
-        'Wheat': ['bread', 'pasta', 'cereal'],
-        'Egg': ['mayonnaise', 'bread', 'pasta'],
+        'Milk': ['cheese', 'milk', 'yogurt', 'butter', 'ice cream', 'chocolate', 'soup'],
+        'Wheat': ['bread', 'pasta', 'cereal', 'soup'],
+        'Egg': ['mayonnaise', 'bread', 'pasta', 'soup'],
         'Sugar': ['chocolate', 'ice cream', 'cereal', 'mayonnaise'],
         'Soybean': ['milk', 'yogurt', 'cheese', 'butter']
       };
@@ -8197,6 +8560,26 @@
             'Choose unsweetened cereals',
             'Add fresh fruit for natural sweetness',
             'Try stevia-sweetened cereal alternatives'
+          ]
+        },
+        'soup': {
+          'Milk': [
+            'Use plant-based milk alternatives like almond milk or coconut milk',
+            'Check labels for hidden dairy ingredients like whey or casein',
+            'Try dairy-free versions of your favorite soups',
+            'Use vegetable broth instead of cream-based broths',
+            'Add coconut milk for creamy texture without dairy'
+          ],
+          'Wheat': [
+            'Use gluten-free noodles or rice instead of wheat noodles',
+            'Check for wheat-based thickeners in soup',
+            'Try naturally gluten-free soup bases',
+            'Use quinoa or rice as grain alternatives in soup'
+          ],
+          'Egg': [
+            'Avoid soups with egg noodles or egg-based thickeners',
+            'Check labels for egg-based ingredients in soup',
+            'Use vegetable-based thickeners instead of eggs'
           ]
         }
       };
