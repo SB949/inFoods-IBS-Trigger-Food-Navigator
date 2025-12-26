@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
   <title>Trigger Food Navigator</title>
   
   <!-- Performance optimizations -->
@@ -31,6 +31,15 @@
       --text: #062a39;
       --card-bg: #ffffff;
       --border-color: #4489c9;
+      
+      /* Animation Timing Variables */
+      --anim-fast: 150ms;
+      --anim-normal: 300ms;
+      --anim-slow: 500ms;
+      --anim-ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+      --anim-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+      --anim-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --anim-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
     }
     
     /* Dark Theme */
@@ -43,6 +52,20 @@
       --text: #ffffff;
       --card-bg: #051f2a;
       --border-color: #51baad;
+    }
+
+    /* Dark Theme Medical Disclaimer */
+    [data-theme="dark"] .medical-disclaimer {
+      background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+      border-left-color: #fdcb6e;
+    }
+
+    [data-theme="dark"] .disclaimer-content p {
+      color: #ddd;
+    }
+
+    [data-theme="dark"] .disclaimer-content strong {
+      color: #ff7675;
     }
     
     /* Theme Switcher */
@@ -87,6 +110,19 @@
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+    }
+    
+    /* Respect reduced motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
     }
     
     /* Header */
@@ -182,6 +218,83 @@
         display: none;
       }
     }
+
+    /* Medical Disclaimer */
+    .medical-disclaimer {
+      background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+      border-left: 4px solid #f39c12;
+      margin: 0 20px 20px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      animation: slideInDown 0.5s ease-out;
+    }
+
+    .disclaimer-content {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px 20px;
+    }
+
+    .disclaimer-icon {
+      font-size: 1.2em;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .disclaimer-content p {
+      margin: 0;
+      font-size: 0.9em;
+      line-height: 1.5;
+      color: #8b4513;
+      font-weight: 500;
+    }
+
+    .disclaimer-content strong {
+      color: #d63031;
+      font-weight: 700;
+    }
+
+    @keyframes slideInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .medical-disclaimer {
+        margin: 0 15px 15px 15px;
+      }
+      
+      .disclaimer-content {
+        padding: 12px 16px;
+        gap: 10px;
+      }
+      
+      .disclaimer-content p {
+        font-size: 0.85em;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .medical-disclaimer {
+        margin: 0 10px 10px 10px;
+      }
+      
+      .disclaimer-content {
+        padding: 10px 12px;
+        gap: 8px;
+      }
+      
+      .disclaimer-content p {
+        font-size: 0.8em;
+      }
+    }
     
     /* Verification Overlay */
     .verification-overlay {
@@ -266,14 +379,24 @@
       border: 2.5px solid rgba(253, 253, 253, 0.363);
       background-color: rgb(255 255 255 / 0.05);
       text-transform: uppercase;
+      transition: all var(--anim-normal) var(--anim-ease-out);
+      touch-action: manipulation;
+    }
+    
+    /* Prevent zoom on iOS when focusing input */
+    @media (max-width: 768px) {
+      .form .input-fields input {
+        font-size: 16px; /* Prevents zoom on iOS */
+      }
     }
 
     .form .input-fields input:focus {
-      border: 1px solid var(--primary);
+      border: 2.5px solid var(--primary);
       box-shadow: inset -1px -1px 5px rgba(255, 255, 255, .6),
-            inset 10px 10px 10px rgba(0, 0, 0, .25);
+            inset 10px 10px 10px rgba(0, 0, 0, .25),
+            0 0 0 3px rgba(68, 137, 201, 0.2);
       transform: scale(1.05);
-      transition: 0.5s;
+      transition: all var(--anim-normal) var(--anim-ease-out);
     }
 
     /* Verification Message */
@@ -417,7 +540,7 @@
       border: 1px solid var(--border-color);
       border-radius: 6px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all var(--anim-normal) var(--anim-ease-out);
       background: var(--card-bg);
       position: relative;
       min-height: 100px;
@@ -428,16 +551,18 @@
       min-width: 44px;
       -webkit-tap-highlight-color: rgba(81, 186, 173, 0.3);
       user-select: none;
+      touch-action: manipulation;
+      will-change: transform, box-shadow;
     }
 
     .food-item:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
     .food-item:active {
-      transform: scale(0.98);
-      transition: transform 0.1s ease;
+      transform: scale(0.96);
+      transition: transform var(--anim-fast) var(--anim-ease-out);
     }
 
     .food-item img {
@@ -461,13 +586,34 @@
       width: 100%;
       font-weight: 500;
       border-radius: 4px;
-      transition: all 0.2s ease;
+      transition: all var(--anim-fast) var(--anim-ease-out);
       margin-top: auto;
       min-height: 44px; /* Minimum touch target size */
       display: flex;
       align-items: center;
       justify-content: center;
       -webkit-tap-highlight-color: rgba(81, 186, 173, 0.3);
+      touch-action: manipulation;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .food-toggle-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(81, 186, 173, 0.2);
+      transform: translate(-50%, -50%);
+      transition: width var(--anim-normal), height var(--anim-normal);
+    }
+    
+    .food-toggle-btn:active::before {
+      width: 200px;
+      height: 200px;
     }
 
     .food-toggle-btn:hover {
@@ -476,13 +622,43 @@
 
     .food-toggle-btn:active {
       background-color: rgba(81, 186, 173, 0.2);
-      transform: scale(0.98);
+      transform: scale(0.95);
     }
 
     .food-item.selected {
       background: var(--highlight);
       border-color: var(--accent);
       transform: scale(1.05);
+      animation: selectPulse var(--anim-slow) var(--anim-spring);
+      box-shadow: 0 4px 16px rgba(81, 186, 173, 0.3);
+    }
+    
+    @keyframes selectPulse {
+      0% {
+        transform: scale(1);
+        opacity: 0.8;
+      }
+      50% {
+        transform: scale(1.08);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1.05);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.7;
+      }
+    }
+    
+    .food-item.selected.pulse {
+      animation: pulse 2s ease-in-out infinite;
     }
 
     .food-item.selected .food-toggle-btn {
@@ -508,19 +684,43 @@
       background: var(--primary);
       color: white;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all var(--anim-normal) var(--anim-ease-out);
       min-height: 44px; /* Minimum touch target size */
       user-select: none;
       -webkit-tap-highlight-color: rgba(81, 186, 173, 0.3);
+      touch-action: manipulation;
+      position: relative;
+      overflow: hidden;
+      will-change: transform, background-color;
+    }
+    
+    .preference-option::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: translate(-50%, -50%);
+      transition: width var(--anim-normal), height var(--anim-normal);
+    }
+    
+    .preference-option:active::before {
+      width: 300px;
+      height: 300px;
     }
 
     .preference-option:hover {
       background: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     }
 
     .preference-option:active {
-      transform: scale(0.98);
-      transition: transform 0.1s ease;
+      transform: scale(0.96);
+      transition: transform var(--anim-fast) var(--anim-ease-out);
     }
 
     .preference-option input[type="radio"] {
@@ -535,7 +735,20 @@
     .preference-option.selected {
       background: var(--accent);
       transform: scale(1.05);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 12px rgba(81, 186, 173, 0.4);
+      animation: selectBounce var(--anim-slow) var(--anim-spring);
+    }
+    
+    @keyframes selectBounce {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1.05);
+      }
     }
 
     /* Meal Type Filter */
@@ -590,7 +803,7 @@
       background: var(--primary);
       color: white;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all var(--anim-normal) var(--anim-ease-out);
       min-height: 44px; /* Minimum touch target size */
       font-size: 1em;
       font-weight: 500;
@@ -600,15 +813,60 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+      position: relative;
+      overflow: hidden;
+      touch-action: manipulation;
+      will-change: transform, background-color, box-shadow;
+    }
+    
+    .button-group button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width var(--anim-normal), height var(--anim-normal);
+    }
+    
+    .button-group button:active::before {
+      width: 400px;
+      height: 400px;
     }
 
     .button-group button:hover {
       background: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(81, 186, 173, 0.3);
     }
 
     .button-group button:active {
-      transform: scale(0.98);
-      transition: transform 0.1s ease;
+      transform: scale(0.96) translateY(0);
+      transition: transform var(--anim-fast) var(--anim-ease-out);
+      box-shadow: 0 2px 8px rgba(81, 186, 173, 0.2);
+    }
+    
+    .button-group button.loading {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+    
+    .button-group button.loading::after {
+      content: '';
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-left: 8px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     .button-group button:focus {
@@ -625,6 +883,12 @@
 
     .fetch-recipes-btn:hover {
       background: var(--primary) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 6px 20px rgba(68, 137, 201, 0.4) !important;
+    }
+    
+    .fetch-recipes-btn:active {
+      transform: scale(0.96) translateY(0) !important;
     }
 
 
@@ -648,13 +912,19 @@
       border-radius: 8px;
       padding: 20px;
       opacity: 0;
-      transform: translateX(-50px);
-      transition: all 0.5s ease;
+      transform: translateX(-30px) scale(0.95);
+      transition: all var(--anim-slow) var(--anim-ease-out);
+      will-change: transform, opacity;
     }
 
     .replacement-card.show {
       opacity: 1;
-      transform: translateX(0);
+      transform: translateX(0) scale(1);
+    }
+    
+    .replacement-card:hover {
+      transform: translateX(0) scale(1.02) translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     }
 
     /* Adjust card sizes based on number of cards */
@@ -671,6 +941,16 @@
       .replacement-card {
         min-width: 200px;
         max-width: 100%;
+      }
+      
+      /* Improve mobile scrolling indicators */
+      #replacementDisplay, #replacementMeal {
+        scroll-snap-type: x proximity;
+        scroll-padding: 10px;
+      }
+      
+      .replacement-card, .meal-card {
+        scroll-snap-align: start;
       }
     }
 
@@ -726,17 +1006,26 @@
       background: var(--background);
       position: relative;
       opacity: 0;
-      transform: translateX(-50px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
+      transform: translateY(30px) scale(0.95);
+      transition: opacity var(--anim-slow) var(--anim-ease-out), 
+                  transform var(--anim-slow) var(--anim-spring);
       display: flex;
       flex-direction: column;
       margin: 8px;
       overflow: hidden;
+      will-change: transform, opacity;
     }
 
     .meal-card.show {
       opacity: 1;
-      transform: translateX(0);
+      transform: translateY(0) scale(1);
+    }
+    
+    .meal-card:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      transition: transform var(--anim-normal) var(--anim-ease-out),
+                  box-shadow var(--anim-normal) var(--anim-ease-out);
     }
 
     .meal-card.expanded {
@@ -914,6 +1203,14 @@
       scrollbar-width: thin;
       scrollbar-color: var(--accent) transparent;
       padding-bottom: 10px; /* Add padding for scrollbar */
+      overscroll-behavior: contain; /* Prevent scroll chaining */
+    }
+    
+    /* Smooth scrolling for all scrollable elements */
+    #savedMealsPanel, #rightToolsPanel, #mainContentInner {
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
     }
 
     /* Style the scrollbars */
@@ -1115,11 +1412,44 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0);
+      backdrop-filter: blur(0px);
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 1000;
+      opacity: 0;
+      animation: modalFadeIn var(--anim-slow) var(--anim-ease-out) forwards;
+      will-change: opacity, backdrop-filter;
+    }
+    
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        backdrop-filter: blur(0px);
+      }
+      to {
+        opacity: 1;
+        backdrop-filter: blur(4px);
+        background: rgba(0, 0, 0, 0.7);
+      }
+    }
+    
+    .recipe-modal.closing {
+      animation: modalFadeOut var(--anim-normal) var(--anim-ease-out) forwards;
+    }
+    
+    @keyframes modalFadeOut {
+      from {
+        opacity: 1;
+        backdrop-filter: blur(4px);
+        background: rgba(0, 0, 0, 0.7);
+      }
+      to {
+        opacity: 0;
+        backdrop-filter: blur(0px);
+        background: rgba(0, 0, 0, 0);
+      }
     }
 
     .recipe-modal-content {
@@ -1131,6 +1461,36 @@
       padding: 20px;
       position: relative;
       overflow-y: auto;
+      transform: translateY(50px) scale(0.9);
+      opacity: 0;
+      animation: modalSlideUp var(--anim-slow) var(--anim-spring) forwards;
+      will-change: transform, opacity;
+    }
+    
+    @keyframes modalSlideUp {
+      from {
+        transform: translateY(50px) scale(0.9);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+    
+    .recipe-modal-content.closing {
+      animation: modalSlideDown var(--anim-normal) var(--anim-ease-out) forwards;
+    }
+    
+    @keyframes modalSlideDown {
+      from {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(50px) scale(0.9);
+        opacity: 0;
+      }
     }
 
     .recipe-modal-content h2 {
@@ -1181,11 +1541,23 @@
       padding: 8px 16px;
       border-radius: 4px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: all var(--anim-normal) var(--anim-ease-out);
+      touch-action: manipulation;
+      min-height: 44px;
+      min-width: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      will-change: transform, background-color;
     }
 
     .close-modal-btn:hover {
       background: var(--accent);
+      transform: scale(1.1);
+    }
+    
+    .close-modal-btn:active {
+      transform: scale(0.95);
     }
 
     .meal-image {
@@ -2580,6 +2952,20 @@
       -webkit-overflow-scrolling: touch;
       /* Prevent content behind modal from being touchable */
       touch-action: auto;
+      scroll-behavior: smooth;
+    }
+    
+    .replacement-modal {
+      background: rgba(0, 0, 0, 0);
+      backdrop-filter: blur(0px);
+      opacity: 0;
+      animation: modalFadeIn var(--anim-slow) var(--anim-ease-out) forwards;
+    }
+    
+    .replacement-modal-content {
+      transform: translateY(50px) scale(0.9);
+      opacity: 0;
+      animation: modalSlideUp var(--anim-slow) var(--anim-spring) forwards;
     }
 
     /* Enhanced modal styles for mobile */
@@ -3135,6 +3521,14 @@
       <span id="theme-text">Light Mode</span>
     </div>
   </header>
+
+  <!-- Medical Disclaimer -->
+  <div class="medical-disclaimer">
+    <div class="disclaimer-content">
+      <span class="disclaimer-icon">⚠️</span>
+      <p><strong>Important:</strong> This tool is for informational purposes only and should not replace professional medical advice. Always consult with your healthcare provider or a registered dietitian before making significant changes to your diet, especially if you have IBS or other digestive conditions.</p>
+    </div>
+  </div>
       
   <div class="main-wrapper">
     <!-- Left Sidebar: My Saved Meals -->
@@ -5403,11 +5797,17 @@
         return;
       }
 
-      // Create and append exactly 3 recipe cards
+      // Create and append exactly 3 recipe cards with staggered animations
       const recipeCards = selectedRecipes.map((recipe, index) => {
         console.log(`Creating card ${index + 1} for recipe:`, recipe.name);
         const card = createRecipeCard(recipe);
-        card.classList.add('show');
+        // Add staggered animation delay
+        card.style.animationDelay = `${index * 100}ms`;
+        card.style.transitionDelay = `${index * 100}ms`;
+        // Trigger animation after a brief delay
+        setTimeout(() => {
+          card.classList.add('show');
+        }, index * 100);
         return card;
       });
 
@@ -5431,18 +5831,16 @@
             ${replacements.map(replacement => `<li>${replacement}</li>`).join('')}
           </ul>
         </div>
-        <button onclick="this.parentElement.parentElement.remove()" class="close-modal-btn">Close</button>
+        <button onclick="closeModalWithAnimation(this.closest('.recipe-modal, .replacement-modal'))" class="close-modal-btn">Close</button>
       `;
       
       modal.appendChild(modalContent);
       // Add click event listener to modal background
       modal.addEventListener('click', handleModalBackgroundClick);
       document.body.appendChild(modal);
+      preventBackgroundScroll(true);
       
-      // Add animation
-      requestAnimationFrame(() => {
-        modalContent.classList.add('show');
-      });
+      // Animation is handled by CSS
     }
 
     // Update showReplacementDetails function
@@ -5460,18 +5858,16 @@
             ${replacements.map(replacement => `<li>${replacement}</li>`).join('')}
           </ul>
         </div>
-        <button onclick="this.parentElement.parentElement.remove()" class="close-modal-btn">Close</button>
+        <button onclick="closeModalWithAnimation(this.closest('.recipe-modal, .replacement-modal'))" class="close-modal-btn">Close</button>
       `;
       
       modal.appendChild(modalContent);
       // Add click event listener to modal background
       modal.addEventListener('click', handleModalBackgroundClick);
       document.body.appendChild(modal);
+      preventBackgroundScroll(true);
       
-      // Add animation
-      requestAnimationFrame(() => {
-        modalContent.classList.add('show');
-      });
+      // Animation is handled by CSS
     }
 
     // Function to update replacement suggestions
@@ -5533,7 +5929,19 @@
     async function fetchAndDisplayRecipes() {
       console.log('Starting fetchAndDisplayRecipes function');
       
+      const fetchButton = document.getElementById('fetchRecipesBtn');
+      const originalText = fetchButton.querySelector('span')?.textContent || fetchButton.textContent;
+      
       try {
+        // Add loading state
+        fetchButton.classList.add('loading');
+        fetchButton.disabled = true;
+        if (fetchButton.querySelector('span')) {
+          fetchButton.querySelector('span').textContent = 'Loading...';
+        } else {
+          fetchButton.textContent = 'Loading...';
+        }
+        
         // Load recipes if not already loaded
         if (recipes.length === 0) {
           console.log('No recipes loaded, attempting to load recipes...');
@@ -5552,6 +5960,15 @@
       } catch (error) {
         console.error('Error in fetchAndDisplayRecipes:', error);
         showNotification(`Failed to display suggestions: ${error.message}. Please try again.`, 'error');
+      } finally {
+        // Remove loading state
+        fetchButton.classList.remove('loading');
+        fetchButton.disabled = false;
+        if (fetchButton.querySelector('span')) {
+          fetchButton.querySelector('span').textContent = originalText;
+        } else {
+          fetchButton.textContent = originalText;
+        }
       }
     }
     // Show detailed recipe information
@@ -5672,7 +6089,7 @@
             </div>
             ${modalCooksNotesHtml}
           </div>
-          <button onclick="this.parentElement.parentElement.remove()" class="close-modal-btn">Close</button>
+          <button onclick="closeModalWithAnimation(this.closest('.recipe-modal, .replacement-modal'))" class="close-modal-btn">Close</button>
         </div>
       `;
 
@@ -5682,11 +6099,8 @@
       modal.addEventListener('click', handleModalBackgroundClick);
       document.body.appendChild(modal);
       
-      // Add animation
-      requestAnimationFrame(() => {
-        modalContent.style.opacity = '1';
-        modalContent.style.transform = 'translateY(0)';
-      });
+      // Trigger animation (CSS handles it now)
+      preventBackgroundScroll(true);
     }
 
     // Load saved theme preference
@@ -5968,7 +6382,7 @@
             ` : ''}
           ` : ''}
         </div>
-        <button onclick="this.parentElement.parentElement.remove()" class="close-modal-btn">Close</button>
+        <button onclick="closeModalWithAnimation(this.closest('.recipe-modal, .replacement-modal'))" class="close-modal-btn">Close</button>
       `;
       
       // Insert the image after the title
@@ -5977,12 +6391,9 @@
       // Add click event listener to modal background
       modal.addEventListener('click', handleModalBackgroundClick);
       document.body.appendChild(modal);
+      preventBackgroundScroll(true);
       
-      // Add animation
-      requestAnimationFrame(() => {
-        modalContent.style.opacity = '1';
-        modalContent.style.transform = 'translateY(0)';
-      });
+      // Animation is handled by CSS
     }
 
     // Test function to verify ingredient warning relationships
@@ -6053,11 +6464,27 @@
       document.addEventListener('DOMContentLoaded', testIngredientWarnings);
     }
 
-    // Add function to handle modal background clicks
+    // Add function to handle modal background clicks with animation
     function handleModalBackgroundClick(event) {
       if (event.target.classList.contains('recipe-modal') || 
           event.target.classList.contains('replacement-modal')) {
-        event.target.remove();
+        closeModalWithAnimation(event.target);
+      }
+    }
+    
+    // Function to close modal with smooth animation
+    function closeModalWithAnimation(modal) {
+      const modalContent = modal.querySelector('.recipe-modal-content, .replacement-modal-content');
+      if (modalContent) {
+        modal.classList.add('closing');
+        modalContent.classList.add('closing');
+        setTimeout(() => {
+          modal.remove();
+          preventBackgroundScroll(false);
+        }, 300); // Match animation duration
+      } else {
+        modal.remove();
+        preventBackgroundScroll(false);
       }
     }
 
@@ -7526,16 +7953,6 @@
         `;
       }
 
-      if (alternatives.length > 0) {
-        resultHtml += `
-          <div class="ingredient-info-section">
-            <h5>🔄 Safe Alternatives:</h5>
-            <ul>
-              ${alternatives.map(alt => `<li>${alt}</li>`).join('')}
-            </ul>
-          </div>
-        `;
-      }
 
       if (brandRecommendations.length > 0) {
         resultHtml += `
@@ -7548,16 +7965,6 @@
         `;
       }
 
-      if (cookingTips.length > 0) {
-        resultHtml += `
-          <div class="ingredient-info-section">
-            <h5>👨‍🍳 Cooking Tips:</h5>
-            <ul>
-              ${cookingTips.map(tip => `<li>${tip}</li>`).join('')}
-            </ul>
-          </div>
-        `;
-      }
 
       if (crossContamination) {
         resultHtml += `
@@ -8951,13 +9358,19 @@
           
           const deltaY = currentY - startY;
           if (deltaY > 100 && modalContent.scrollTop === 0) {
-            // Close modal if pulled down enough
-            modal.remove();
-            preventBackgroundScroll(false);
+            // Close modal if pulled down enough with animation
+            closeModalWithAnimation(modal);
           } else {
-            // Reset position
+            // Reset position with smooth transition
+            modal.style.transition = 'background-color var(--anim-normal) var(--anim-ease-out)';
+            modalContent.style.transition = 'transform var(--anim-normal) var(--anim-ease-out)';
             modal.style.backgroundColor = '';
             modalContent.style.transform = '';
+            // Remove transition after animation completes
+            setTimeout(() => {
+              modal.style.transition = '';
+              modalContent.style.transition = '';
+            }, 300);
           }
         }, { passive: true });
       }
@@ -9077,21 +9490,8 @@
       
       interactiveElements.forEach(addHapticFeedback);
       
-      // Enhanced touch handling for food items
-      const foodItems = document.querySelectorAll('.food-item');
-      foodItems.forEach(item => {
-        item.addEventListener('touchstart', function() {
-          this.style.transform = 'scale(0.95)';
-        }, { passive: true });
-        
-        item.addEventListener('touchend', function() {
-          setTimeout(() => {
-            if (!this.classList.contains('selected')) {
-              this.style.transform = '';
-            }
-          }, 100);
-        }, { passive: true });
-      });
+      // Enhanced touch handling for food items with smooth transitions (already handled above)
+      // This section is now handled in the earlier code block
       
       // Optimize scroll performance on mobile
       if (window.innerWidth <= 768) {
@@ -9110,16 +9510,18 @@
           target.style.minWidth = '44px';
         });
         
-        // Add swipe gestures for panels on mobile
+        // Add swipe gestures for panels on mobile with smooth transitions
         let startX = 0;
         let currentX = 0;
         let isDragging = false;
         
         const panels = document.querySelectorAll('#savedMealsPanel, #rightToolsPanel');
         panels.forEach(panel => {
+          panel.style.transition = 'transform var(--anim-normal) var(--anim-ease-out)';
           panel.addEventListener('touchstart', (e) => {
             startX = e.touches[0].clientX;
             isDragging = true;
+            panel.style.transition = 'none'; // Disable transition during drag
           }, { passive: true });
           
           panel.addEventListener('touchmove', (e) => {
@@ -9127,15 +9529,16 @@
             currentX = e.touches[0].clientX;
             const deltaX = currentX - startX;
             
-            // Add visual feedback for swipe
+            // Add visual feedback for swipe with momentum
             if (Math.abs(deltaX) > 10) {
-              panel.style.transform = `translateX(${deltaX * 0.1}px)`;
+              panel.style.transform = `translateX(${deltaX * 0.15}px)`;
             }
           }, { passive: true });
           
           panel.addEventListener('touchend', () => {
             if (!isDragging) return;
             isDragging = false;
+            panel.style.transition = 'transform var(--anim-normal) var(--anim-ease-out)';
             panel.style.transform = '';
           }, { passive: true });
         });
